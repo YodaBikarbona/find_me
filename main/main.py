@@ -10,6 +10,7 @@ from main.api.base.base import (
     engine,
 )
 from main.api.config import settings
+from main.api.user.controller.login import router as login_router
 from main.api.user.controller.register import router as register_router
 from main.api.user.controller.user import router as user_router
 from main.api.utils.response import ok_response
@@ -38,6 +39,7 @@ app.add_route(f"/metrics", metrics)
 
 # Routers
 app.include_router(register_router)
+app.include_router(login_router)
 app.include_router(user_router)
 
 

@@ -10,11 +10,12 @@ def now() -> datetime:
     return datetime.now(tz=timezone.utc)
 
 
-def ok_response(message, status_code=200, **additional_data):
+def ok_response(message, status_code=200, cookies: dict = {}, **additional_data):
     """
     The function will create https ok response
     :param message:
     :param status_code:
+    :param cookies:
     :param additional_data:
     :return: dict
     """
@@ -26,7 +27,10 @@ def ok_response(message, status_code=200, **additional_data):
     }
     for k, v in additional_data.items():
         data['{0}'.format(k)] = v
-    return JSONResponse(data, status_code=status_code)
+    res = JSONResponse(data, status_code=status_code)
+    for k, v in cookies.items():
+        res.set_cookie(key=k, value=v)
+    return res
 
 
 def error_response(message, status_code):

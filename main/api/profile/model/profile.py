@@ -13,7 +13,7 @@ from main.api.base.base import (
     Base,
     engine,
 )
-from main.api.base.repository.base_model import BaseModel
+from main.api.base.model.base_model import BaseModel
 from main.api.user.model.user import User
 
 
@@ -28,7 +28,7 @@ class Profile(BaseModel):
     # Foreign keys
     user_id = Column(Integer, ForeignKey('users.id', ondelete='CASCADE'), nullable=False)
     # Relationships
-    user = relationship(User, back_populates='profile')
+    user = relationship(User)
 
 
 Profile.__table__.columns['id'].sequence = Sequence('profile_id_seq')

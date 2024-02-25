@@ -10,7 +10,7 @@ from main.api.base.base import (
     Base,
     engine,
 )
-from main.api.base.repository.base_model import BaseModel
+from main.api.base.model.base_model import BaseModel
 
 
 class User(BaseModel):
@@ -21,9 +21,6 @@ class User(BaseModel):
     phone_number = Column(Unicode(20), nullable=False, unique=True)
     activated = Column(Boolean, default=False)
     banned = Column(Boolean, default=False)
-
-    # Relationships
-    profile = relationship('Profile', back_populates='user')
 
     # Constrains
     UniqueConstraint(username, name="unique_username")

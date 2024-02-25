@@ -1,3 +1,6 @@
 BASE_ERROR = "Something went wrong!"
 USERS_NOT_FOUND = "Users not found!"
 USER_ALREADY_EXISTS = "The user already exists!"
+USER_NOT_FOUND = "User not found!"
+INVALID_USER_OR_PASSWORD = "Incorrect user or password!"
+BAD_REQUEST = "Bad request!"

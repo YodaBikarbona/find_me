@@ -12,7 +12,7 @@ def get_all_users(session: Session) -> List[User]:
 
 def get_existing_user(session: Session, username: str, email: str, phone_number: str) -> User:
     return (session.query(User)
-            .filter(or_(User.username == username, User.email == email, User.phone_number == phone_number))).first()
+            .filter(or_(User.username == username, User.email == email, User.phone_number == phone_number)).first())
 
 
 def new_user(session: Session, username: str, email: str, phone_number: str) -> User:
@@ -20,3 +20,7 @@ def new_user(session: Session, username: str, email: str, phone_number: str) -> 
     session.add(user)
     session.flush()
     return user
+
+
+def get_user_by_email(session: Session, email: str) -> User:
+    return session.query(User).filter(User.email == email).first()
