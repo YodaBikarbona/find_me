@@ -1,16 +1,17 @@
 package com.findme.user.model;
 
 import com.findme.base.model.BaseEntity;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.PrePersist;
-import jakarta.persistence.Table;
+import com.findme.secutiry.model.SecurityEntity;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 
 @Entity
-@Table(name = "user")
+@Table(name = "users")
 public class UserEntity extends BaseEntity {
 
+    @NotNull
+    @Column(name = "email")
+    private String email;
     @NotNull
     @Column(name = "username")
     private String username;
@@ -24,6 +25,10 @@ public class UserEntity extends BaseEntity {
     @Column(name = "banned")
     private boolean banned;
 
+    @ManyToOne
+    @JoinColumn(name = "security_id")
+    private SecurityEntity security;
+
     @PrePersist
     protected void onCreate() {
         activated = Boolean.FALSE;
@@ -31,12 +36,19 @@ public class UserEntity extends BaseEntity {
     }
 
     // Constructors
-    public UserEntity(String username, String phoneNumber) {
+    public UserEntity(String email, String username, String phoneNumber) {
+        this.email = email;
         this.username = username;
         this.phoneNumber = phoneNumber;
     }
 
+    public UserEntity() { }
+
     // Getters
+    public String getEmail() {
+        return email;
+    }
+
     public String getUsername() {
         return username;
     }
@@ -54,6 +66,10 @@ public class UserEntity extends BaseEntity {
     }
 
     // Setters
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
     public void setUsername(String username) {
         this.username = username;
     }
@@ -68,5 +84,9 @@ public class UserEntity extends BaseEntity {
 
     public void setBanned(boolean banned) {
         this.banned = banned;
+    }
+
+    public void setSecurity(SecurityEntity security) {
+        this.security = security;
     }
 }

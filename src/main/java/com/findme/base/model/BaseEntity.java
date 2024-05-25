@@ -20,4 +20,7 @@ public abstract class BaseEntity {
     @UpdateTimestamp
     private Instant modifiedAt;
 
+    public Long getId() {
+        return id;
+    }
 }
