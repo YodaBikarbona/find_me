@@ -27,7 +27,7 @@ public class UserController {
         return userService.registerUser(user);
     }
 
-    @ResponseStatus(HttpStatus.CREATED)
+    @ResponseStatus(HttpStatus.OK)
     @PostMapping(value = "/login", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseLoginDao login(@RequestBody LoginDao user) throws BadRequestException {
         return userService.loginUser(user);

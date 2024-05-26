@@ -1,9 +1,11 @@
 package com.findme.secutiry.model;
 
 import com.findme.base.model.BaseEntity;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -14,9 +16,17 @@ import java.util.Base64;
 @Table(name = "users_security")
 public class SecurityEntity extends BaseEntity {
 
+    @NotNull
+    @Column(name = "access_token_secret")
     private String accessTokenSecret;
+    @NotNull
+    @Column(name = "refresh_token_secret")
     private String refreshTokenSecret;
+    @NotNull
+    @Column(name = "password")
     private String password;
+    @NotNull
+    @Column(name = "salt")
     private String salt;
 
     @PrePersist
@@ -77,7 +87,7 @@ public class SecurityEntity extends BaseEntity {
         String encryptedPassword = "";
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-256");
-            md.update(Base64.getDecoder().decode(this.salt)); // Decode the salt
+            md.update(Base64.getDecoder().decode(this.salt));
             byte[] bytes = md.digest(password.getBytes());
             StringBuilder sb = new StringBuilder();
             for (byte aByte : bytes) {
