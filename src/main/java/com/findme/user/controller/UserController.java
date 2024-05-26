@@ -1,7 +1,9 @@
 package com.findme.user.controller;
 
+import com.findme.user.dao.request.LoginDao;
 import com.findme.user.dao.request.NewUserDao;
 import com.findme.user.dao.response.CreatedUserDao;
+import com.findme.user.dao.response.ResponseLoginDao;
 import com.findme.user.service.UserService;
 import org.apache.coyote.BadRequestException;
 import org.springframework.http.HttpStatus;
@@ -20,8 +22,14 @@ public class UserController {
     }
 
     @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping(value = "/create", produces = MediaType.APPLICATION_JSON_VALUE)
-    public CreatedUserDao createUser(@RequestBody NewUserDao user) throws BadRequestException {
-        return userService.createNewUser(user);
+    @PostMapping(value = "/register", produces = MediaType.APPLICATION_JSON_VALUE)
+    public CreatedUserDao register(@RequestBody NewUserDao user) throws BadRequestException {
+        return userService.registerUser(user);
+    }
+
+    @ResponseStatus(HttpStatus.CREATED)
+    @PostMapping(value = "/login", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseLoginDao login(@RequestBody LoginDao user) throws BadRequestException {
+        return userService.loginUser(user);
     }
 }

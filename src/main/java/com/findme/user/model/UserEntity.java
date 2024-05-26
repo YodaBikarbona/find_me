@@ -65,6 +65,10 @@ public class UserEntity extends BaseEntity {
         return banned;
     }
 
+    public SecurityEntity getSecurity() {
+        return security;
+    }
+
     // Setters
     public void setEmail(String email) {
         this.email = email;
