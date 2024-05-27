@@ -1,8 +1,8 @@
-package com.findme.user.dao.response;
+package com.findme.user.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class CreatedUserDao {
+public class NewUserDto {
 
     @JsonProperty("id")
     private Long id;
@@ -13,7 +13,7 @@ public class CreatedUserDao {
     @JsonProperty("phoneNumber")
     private String phoneNumber;
 
-    public CreatedUserDao(Long id, String email, String username, String phoneNumber) {
+    public NewUserDto(Long id, String email, String username, String phoneNumber) {
         this.id = id;
         this.email = email;
         this.username = username;

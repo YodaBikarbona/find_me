@@ -1,6 +1,6 @@
-package com.findme.user.dao.request;
+package com.findme.user.dto.request;
 
-public class LoginDao {
+public class RequestLoginDto {
 
     private String username;
     private String password;

@@ -1,8 +1,8 @@
-package com.findme.user.dao.response;
+package com.findme.user.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class ResponseLoginDao {
+public class LoginDto {
 
     @JsonProperty("id")
     private Long id;
@@ -11,7 +11,7 @@ public class ResponseLoginDao {
     @JsonProperty("refreshToken")
     private String refreshToken;
 
-    public ResponseLoginDao(Long id, String accessToken, String refreshToken) {
+    public LoginDto(Long id, String accessToken, String refreshToken) {
         this.id = id;
         this.accessToken = accessToken;
         this.refreshToken = refreshToken;

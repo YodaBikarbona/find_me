@@ -1,13 +1,13 @@
-package com.findme.user.dao.request;
+package com.findme.user.dto.request;
 
-public class NewUserDao {
+public class RequestNewUserDto {
     private String email;
     private String username;
     private String phoneNumber;
     private String password;
 
     // Constructors
-    public NewUserDao(String email, String username, String phoneNumber, String password, String confirmedPassword) {
+    public RequestNewUserDto(String email, String username, String phoneNumber, String password, String confirmedPassword) {
         if (!password.equals(confirmedPassword)) {
             throw new IllegalArgumentException("The passwords must be same!");
         }
