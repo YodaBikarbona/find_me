@@ -1,10 +1,13 @@
 package com.findme.utils;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.findme.exceptions.AuthorizationException;
 import com.findme.user.model.UserEntity;
+import com.findme.user.repository.UserRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.impl.TextCodec;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.stereotype.Component;
 
@@ -15,6 +18,17 @@ import java.util.Map;
 
 @Component
 public class JwtUtil {
+
+    private final UserRepository userRepository;
+
+    private final ObjectMapper objectMapper;
+
+    private static final String AUTHORIZATION_ERROR_MESSAGE = "Authorization token is invalid!";
+
+    public JwtUtil(UserRepository userRepository, ObjectMapper objectMapper) {
+        this.userRepository = userRepository;
+        this.objectMapper = objectMapper;
+    }
 
     // Public methods
     public String generateToken(UserEntity user, boolean accessToken) {
@@ -60,15 +74,24 @@ public class JwtUtil {
                 .getSubject();
     }
 
-    public Claims getClaimsFromToken(String token, UserEntity user, boolean accessToken) throws AuthorizationException {
-        Claims claims = Jwts.parserBuilder()
-                .build()
-                .parseClaimsJws(token)
-                .getBody();
-        if (!validateToken(token, user, accessToken)) {
-            throw new AuthorizationException("The token is invalid!");
+    public Claims getClaimsFromToken(String token, boolean accessToken) throws AuthorizationException {
+        try {
+            String[] parts = token.split("\\.");
+            if (parts.length > 3) {
+                throw new AuthorizationException(AUTHORIZATION_ERROR_MESSAGE);
+            }
+            String payload =  new String(TextCodec.BASE64URL.decode(parts[1]));
+            Map<String, Object> claimsMap = objectMapper.readValue(payload, Map.class);
+            Claims claims = Jwts.claims(claimsMap);
+            Long userId = Long.parseLong(claims.get("id").toString());
+            UserEntity user = userRepository.findById(userId).orElse(null);
+            if (user == null || !validateToken(token, user, accessToken)) {
+                throw new AuthorizationException(AUTHORIZATION_ERROR_MESSAGE);
+            }
+            return claims;
+        } catch (Exception e) {
+            throw new AuthorizationException(AUTHORIZATION_ERROR_MESSAGE);
         }
-        return claims;
     }
 
     // Private methods

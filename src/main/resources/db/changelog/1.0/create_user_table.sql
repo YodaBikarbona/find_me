@@ -13,6 +13,6 @@ CREATE TABLE users (
     security_id BIGINT NOT NULL,
 
     -- Constraints
-    CONSTRAINT fk_security_id FOREIGN KEY (security_id) REFERENCES users_security(id)
+    CONSTRAINT fk_security_id FOREIGN KEY (security_id) REFERENCES users_security(id) ON DELETE SET NULL
 
 )
