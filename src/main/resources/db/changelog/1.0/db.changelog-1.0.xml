@@ -15,6 +15,10 @@
         <sqlFile path="create_user_table.sql" relativeToChangelogFile="true"/>
     </changeSet>
 
+    <changeSet id="create-profile-image-table" author="YodaBikarbona">
+        <sqlFile path="create_profile_image_table.sql" relativeToChangelogFile="true"/>
+    </changeSet>
+
     <changeSet id="create-profile-table" author="YodaBikarbona">
         <sqlFile path="create_profile_table.sql" relativeToChangelogFile="true"/>
     </changeSet>

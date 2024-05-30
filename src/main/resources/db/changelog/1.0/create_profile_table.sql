@@ -11,8 +11,10 @@ CREATE TABLE profiles (
 
     -- Relationships
     user_id BIGINT NOT NULL,
+    profile_image_id BIGINT NULL,
 
     -- Constraints
-    CONSTRAINT fk_profile_user_id FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+    CONSTRAINT fk_profile_user_id FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    CONSTRAINT fk_profile_image_id FOREIGN KEY (profile_image_id) REFERENCES profile_images(id) ON DELETE SET NULL
 
 )

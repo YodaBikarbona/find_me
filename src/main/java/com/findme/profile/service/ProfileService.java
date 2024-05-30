@@ -1,5 +1,6 @@
 package com.findme.profile.service;
 
+import com.findme.exceptions.ConflictException;
 import com.findme.exceptions.NotFoundException;
 import com.findme.profile.dto.request.RequestNewProfileDto;
 import com.findme.profile.dto.response.ProfileDto;
@@ -28,14 +29,14 @@ public class ProfileService {
     }
 
     @Transactional
-    public ProfileDto createNewProfile(RequestNewProfileDto newProfileDto, Long userId) throws BadRequestException {
+    public ProfileDto createNewProfile(RequestNewProfileDto newProfileDto, Long userId) throws BadRequestException, ConflictException {
         Optional<UserEntity> user = userRepository.findById(userId);
         if (user.isEmpty()) {
             throw new BadRequestException("The user doesn't exist!");
         }
         ProfileEntity profile = profileRepository.findByUserId(userId);
         if (profile != null) {
-            throw new BadRequestException("The profile already exist!");
+            throw new ConflictException("The profile already exist!");
         }
         profile = new ProfileEntity(newProfileDto.getFirstName(), newProfileDto.getLastName(), newProfileDto.getGender(), newProfileDto.getBirthday(), newProfileDto.getAboutMe(), user.get());
         profileRepository.save(profile);

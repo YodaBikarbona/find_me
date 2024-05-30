@@ -1,6 +1,7 @@
 package com.findme.profile.model;
 
 import com.findme.base.model.BaseEntity;
+import com.findme.profileimage.model.ProfileImageEntity;
 import com.findme.user.model.UserEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -33,6 +34,10 @@ public class ProfileEntity extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private UserEntity user;
+
+    @ManyToOne
+    @JoinColumn(name = "profile_image_id")
+    private ProfileImageEntity profileImage;
 
     // Constructors
     public ProfileEntity(String firstName, String lastName, Gender gender, LocalDate birthday, String aboutMe, UserEntity user) {
@@ -71,6 +76,10 @@ public class ProfileEntity extends BaseEntity {
         return user;
     }
 
+    public ProfileImageEntity getProfileImage() {
+        return profileImage;
+    }
+
     // Setters
     public void setFirstName(String firstName) {
         this.firstName = firstName;
@@ -91,4 +100,9 @@ public class ProfileEntity extends BaseEntity {
     public void setAboutMe(String aboutMe) {
         this.aboutMe = aboutMe;
     }
+
+    public void setProfileImage(ProfileImageEntity profileImage) {
+        this.profileImage = profileImage;
+    }
+
 }
