@@ -1,7 +1,7 @@
 package com.findme.user.model;
 
 import com.findme.base.model.BaseEntity;
-import com.findme.secutiry.model.SecurityEntity;
+import com.findme.security.model.SecurityEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 

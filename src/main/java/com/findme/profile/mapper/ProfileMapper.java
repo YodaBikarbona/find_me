@@ -20,7 +20,17 @@ public class ProfileMapper {
         if (profile.getProfileImage() != null) {
             thumbnail = profileImageMapper.profileImageEntityToProfileImageDto(profile.getProfileImage());
         }
-        return new ProfileDto(profile.getId(), profile.getFirstName(), profile.getLastName(), profile.getGender(), profile.getBirthday(), profile.getAboutMe(), thumbnail);
+
+        return ProfileDto.builder()
+                .id(profile.getId())
+                .firstName(profile.getFirstName())
+                .lastName(profile.getLastName())
+                .gender(profile.getGender())
+                .birthday(profile.getBirthday())
+                .aboutMe(profile.getAboutMe())
+                .thumbnail(thumbnail)
+                .build();
+
     }
 
 }

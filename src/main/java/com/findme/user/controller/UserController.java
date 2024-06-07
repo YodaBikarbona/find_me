@@ -5,13 +5,13 @@ import com.findme.user.dto.request.RequestNewUserDto;
 import com.findme.user.dto.response.NewUserDto;
 import com.findme.user.dto.response.LoginDto;
 import com.findme.user.service.UserService;
+import jakarta.validation.Valid;
 import org.apache.coyote.BadRequestException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@CrossOrigin(origins = "*", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE})
 @RequestMapping("/api/users")
 public class UserController {
 
@@ -23,7 +23,7 @@ public class UserController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(value = "/register", produces = MediaType.APPLICATION_JSON_VALUE)
-    public NewUserDto register(@RequestBody RequestNewUserDto user) throws BadRequestException {
+    public NewUserDto register(@Valid @RequestBody RequestNewUserDto user) throws BadRequestException {
         return userService.registerUser(user);
     }
 

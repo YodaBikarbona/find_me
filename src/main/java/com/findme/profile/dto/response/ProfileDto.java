@@ -4,10 +4,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.findme.profile.model.Gender;
 import com.findme.profileimage.dto.response.ProfileImageDto;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Null;
-
-import java.time.LocalDate;
-
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+@NoArgsConstructor
+@AllArgsConstructor
 public class ProfileDto {
 
     @NotNull
@@ -30,14 +30,7 @@ public class ProfileDto {
     @JsonProperty("thumbnail")
     private ProfileImageDto thumbnail;
 
-    public ProfileDto(Long id, String firstName, String lastName, Gender gender, LocalDate birthday, String aboutMe, ProfileImageDto thumbnail) {
-        this.id = id;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.gender = gender;
-        this.birthday = birthday.toString();
-        this.aboutMe = aboutMe;
-        this.thumbnail = thumbnail;
+    public static ProfileResponseBuilder builder() {
+        return new ProfileResponseBuilder();
     }
-
 }

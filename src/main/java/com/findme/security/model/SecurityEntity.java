@@ -1,11 +1,13 @@
-package com.findme.secutiry.model;
+package com.findme.security.model;
 
 import com.findme.base.model.BaseEntity;
+import com.findme.utils.ApplicationCtxHolderUtil;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -37,7 +39,9 @@ public class SecurityEntity extends BaseEntity {
     // Constructors
     public SecurityEntity(String password) {
         generateSalt();
-        this.password = encryptPassword(password);
+        //this.password = encryptPassword(password);
+        this.password = ApplicationCtxHolderUtil.getBean(PasswordEncoder.class)
+                .encode(password);
     }
 
     public SecurityEntity() { }

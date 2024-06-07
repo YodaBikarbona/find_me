@@ -1,6 +1,6 @@
-package com.findme.secutiry.repository;
+package com.findme.security.repository;
 
-import com.findme.secutiry.model.SecurityEntity;
+import com.findme.security.model.SecurityEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
