@@ -1,5 +1,6 @@
 package com.findme.user.controller;
 
+import com.findme.exceptions.InternalServerErrorException;
 import com.findme.user.dto.request.RequestLoginDto;
 import com.findme.user.dto.request.RequestNewUserDto;
 import com.findme.user.dto.response.NewUserDto;
@@ -22,13 +23,13 @@ public class UserController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(value = "/register", produces = MediaType.APPLICATION_JSON_VALUE)
-    public NewUserDto register(@Valid @RequestBody RequestNewUserDto user) {
+    public NewUserDto register(@Valid @RequestBody RequestNewUserDto user) throws InternalServerErrorException {
         return userService.registerUser(user);
     }
 
     @ResponseStatus(HttpStatus.OK)
     @PostMapping(value = "/login", produces = MediaType.APPLICATION_JSON_VALUE)
-    public LoginDto login(@RequestBody RequestLoginDto user) {
+    public LoginDto login(@RequestBody RequestLoginDto user) throws InternalServerErrorException {
         return userService.loginUser(user);
     }
 }
