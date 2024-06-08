@@ -18,48 +18,63 @@ import java.util.*;
 public class GlobalExceptionHandler {
 
     private static final String STATUS = "ERROR";
+    private static final String REQUEST_ID_HEADER = "X-Request-ID";
+    private static final String UNKNOWN = "Unknown";
 
     @ExceptionHandler(NotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ResponseEntity<ErrorResponse> handleNotFoundException(NotFoundException ex, HttpServletRequest request) {
-        return new ResponseEntity<>(new ErrorResponse(STATUS, Instant.now(), ex.getMessage(), Collections.emptyList()), HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(new ErrorResponse(getRequestId(request), STATUS, Instant.now(), ex.getMessage(), Collections.emptyList()), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(BadRequestException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<ErrorResponse> handlerBadRequestException(BadRequestException ex, HttpServletRequest request) {
+        return new ResponseEntity<>(new ErrorResponse(getRequestId(request), STATUS, Instant.now(), ex.getMessage(), Collections.emptyList()), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(AuthorizationException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    public ResponseEntity<ErrorResponse> handleAuthorizationException(AuthorizationException ex) {
-        return new ResponseEntity<>(new ErrorResponse(STATUS, Instant.now(), ex.getMessage(), Collections.emptyList()), HttpStatus.UNAUTHORIZED);
+    public ResponseEntity<ErrorResponse> handleAuthorizationException(AuthorizationException ex, HttpServletRequest request) {
+        return new ResponseEntity<>(new ErrorResponse(getRequestId(request), STATUS, Instant.now(), ex.getMessage(), Collections.emptyList()), HttpStatus.UNAUTHORIZED);
     }
 
     @ExceptionHandler(ConflictException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
-    public ResponseEntity<ErrorResponse> handleConflictException(ConflictException ex) {
-        return new ResponseEntity<>(new ErrorResponse(STATUS, Instant.now(), ex.getMessage(), Collections.emptyList()), HttpStatus.CONFLICT);
+    public ResponseEntity<ErrorResponse> handleConflictException(ConflictException ex, HttpServletRequest request) {
+        return new ResponseEntity<>(new ErrorResponse(getRequestId(request), STATUS, Instant.now(), ex.getMessage(), Collections.emptyList()), HttpStatus.CONFLICT);
     }
 
     @ExceptionHandler(InternalServerErrorException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ResponseEntity<ErrorResponse> handleInternalServerErrorException(InternalServerErrorException ex) {
-        return new ResponseEntity<>(new ErrorResponse(STATUS, Instant.now(), ex.getMessage(), Collections.emptyList()), HttpStatus.INTERNAL_SERVER_ERROR);
+    public ResponseEntity<ErrorResponse> handleInternalServerErrorException(InternalServerErrorException ex, HttpServletRequest request) {
+        return new ResponseEntity<>(new ErrorResponse(getRequestId(request), STATUS, Instant.now(), ex.getMessage(), Collections.emptyList()), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ResponseEntity<ErrorResponse> handleMethodArgumentNotValid(MethodArgumentNotValidException ex) {
-        String message = MessageFormat.format("Invalid field: {0}, rejected value: {1}", getErrorField(ex), getRejectedValue(ex));
-        return new ResponseEntity<>(new ErrorResponse(STATUS, Instant.now(), message, getErrors(ex)), HttpStatus.BAD_REQUEST);
+    public ResponseEntity<ErrorResponse> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpServletRequest request) {
+        Object errorField = getErrorField(ex);
+        Object rejectedValue = getRejectedValue(ex);
+        String message;
+        if (errorField.equals(UNKNOWN) || rejectedValue.equals(UNKNOWN)) {
+            message = ex.getAllErrors().getFirst().getDefaultMessage();
+        } else {
+            message = MessageFormat.format("Invalid field: {0}, rejected value: {1}", getErrorField(ex), getRejectedValue(ex));
+        }
+        return new ResponseEntity<>(new ErrorResponse(getRequestId(request), STATUS, Instant.now(), message, getErrors(ex)), HttpStatus.BAD_REQUEST);
     }
 
     private Object getErrorField(MethodArgumentNotValidException ex) {
         return Optional.ofNullable(ex.getFieldError())
                 .map(FieldError::getField)
-                .orElse("Unknown");
+                .orElse(UNKNOWN);
     }
 
     private Object getRejectedValue(MethodArgumentNotValidException ex) {
         return Optional.ofNullable(ex.getFieldError())
                 .map(FieldError::getRejectedValue)
-                .orElse("Unknown");
+                .orElse(UNKNOWN);
     }
 
     private List<String> getErrors(MethodArgumentNotValidException ex) {
@@ -69,7 +84,11 @@ public class GlobalExceptionHandler {
                 .toList();
     }
 
+    private String getRequestId(HttpServletRequest request) {
+        return (String) request.getAttribute(REQUEST_ID_HEADER);
+    }
+
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    public record ErrorResponse(String status, Instant timestamp, String message, List<String> errors) { }
+    public record ErrorResponse(String requestId, String status, Instant timestamp, String message, List<String> errors) { }
 
 }

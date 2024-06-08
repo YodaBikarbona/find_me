@@ -20,9 +20,7 @@ import java.util.Map;
 public class JwtUtil {
 
     private final UserRepository userRepository;
-
     private final ObjectMapper objectMapper;
-
     private static final String AUTHORIZATION_ERROR_MESSAGE = "Authorization token is invalid!";
 
     public JwtUtil(UserRepository userRepository, ObjectMapper objectMapper) {

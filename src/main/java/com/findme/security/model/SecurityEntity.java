@@ -7,29 +7,31 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.Base64;
 
 @Entity
 @Table(name = "users_security")
+@Getter
+@Setter
 public class SecurityEntity extends BaseEntity {
 
     @NotNull
     @Column(name = "access_token_secret")
+    @Setter(AccessLevel.NONE)
     private String accessTokenSecret;
     @NotNull
     @Column(name = "refresh_token_secret")
+    @Setter(AccessLevel.NONE)
     private String refreshTokenSecret;
     @NotNull
     @Column(name = "password")
     private String password;
-    @NotNull
-    @Column(name = "salt")
-    private String salt;
 
     @PrePersist
     protected void onCreate() {
@@ -38,44 +40,12 @@ public class SecurityEntity extends BaseEntity {
 
     // Constructors
     public SecurityEntity(String password) {
-        generateSalt();
-        //this.password = encryptPassword(password);
-        this.password = ApplicationCtxHolderUtil.getBean(PasswordEncoder.class)
-                .encode(password);
+        this.password = encryptPassword(password);
     }
 
     public SecurityEntity() { }
 
-    // Getters
-    public String getAccessTokenSecret() {
-        return accessTokenSecret;
-    }
-
-    public String getRefreshTokenSecret() {
-        return refreshTokenSecret;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public String getSalt() {
-        return salt;
-    }
-
-    // Setters
-    public void setPassword(String password) {
-        this.password = encryptPassword(password);
-    }
-
     // Public methods
-    public void generateSalt() {
-        byte[] saltBytes = new byte[16];
-        SecureRandom random = new SecureRandom();
-        random.nextBytes(saltBytes);
-        this.salt = Base64.getEncoder().encodeToString(saltBytes);
-    }
-
     public void generateTokenSecret() {
         byte[] accessTokenBytes = new byte[128];
         SecureRandom randomAccess = new SecureRandom();
@@ -88,20 +58,8 @@ public class SecurityEntity extends BaseEntity {
     }
 
     public String encryptPassword(String password) {
-        String encryptedPassword = "";
-        try {
-            MessageDigest md = MessageDigest.getInstance("SHA-256");
-            md.update(Base64.getDecoder().decode(this.salt));
-            byte[] bytes = md.digest(password.getBytes());
-            StringBuilder sb = new StringBuilder();
-            for (byte aByte : bytes) {
-                sb.append(Integer.toString((aByte & 0xff) + 0x100, 16).substring(1));
-            }
-            encryptedPassword = sb.toString();
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException("The password cannot be created!");
-        }
-        return encryptedPassword;
+        return ApplicationCtxHolderUtil.getBean(PasswordEncoder.class)
+                .encode(password);
     }
 
 }

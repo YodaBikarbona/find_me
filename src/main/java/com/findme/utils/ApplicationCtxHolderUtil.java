@@ -13,14 +13,11 @@ import org.springframework.stereotype.Component;
 public class ApplicationCtxHolderUtil implements ApplicationContextAware {
 
     private static ApplicationContext context;
-
     private static final Logger logger = LoggerFactory.getLogger(ApplicationCtxHolderUtil.class);
 
     @Override
     public synchronized void setApplicationContext(@NonNull ApplicationContext context) throws BeansException {
-
         logger.info("[CTX UTIL] - Init application context.");
-
         ApplicationCtxHolderUtil.context = context;
     }
 

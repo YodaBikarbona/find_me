@@ -6,7 +6,6 @@ import com.findme.user.dto.response.NewUserDto;
 import com.findme.user.dto.response.LoginDto;
 import com.findme.user.service.UserService;
 import jakarta.validation.Valid;
-import org.apache.coyote.BadRequestException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -23,13 +22,13 @@ public class UserController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(value = "/register", produces = MediaType.APPLICATION_JSON_VALUE)
-    public NewUserDto register(@Valid @RequestBody RequestNewUserDto user) throws BadRequestException {
+    public NewUserDto register(@Valid @RequestBody RequestNewUserDto user) {
         return userService.registerUser(user);
     }
 
     @ResponseStatus(HttpStatus.OK)
     @PostMapping(value = "/login", produces = MediaType.APPLICATION_JSON_VALUE)
-    public LoginDto login(@RequestBody RequestLoginDto user) throws BadRequestException {
+    public LoginDto login(@RequestBody RequestLoginDto user) {
         return userService.loginUser(user);
     }
 }

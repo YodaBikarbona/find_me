@@ -4,9 +4,11 @@ import com.google.i18n.phonenumbers.PhoneNumberUtil;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import lombok.SneakyThrows;
+import org.springframework.stereotype.Component;
 
 import static com.google.i18n.phonenumbers.Phonenumber.PhoneNumber.CountryCodeSource.UNSPECIFIED;
 
+@Component
 public class PhoneNumberValidator implements ConstraintValidator<ValidPhoneNumber, String> {
 
     private final PhoneNumberUtil phoneNumberUtil = PhoneNumberUtil.getInstance();

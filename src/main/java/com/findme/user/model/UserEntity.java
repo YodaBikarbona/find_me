@@ -4,9 +4,14 @@ import com.findme.base.model.BaseEntity;
 import com.findme.security.model.SecurityEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Table(name = "users")
+@Getter
+@Setter
 public class UserEntity extends BaseEntity {
 
     @NotNull
@@ -20,13 +25,16 @@ public class UserEntity extends BaseEntity {
     private String phoneNumber;
     @NotNull
     @Column(name = "activated")
-    private boolean activated;
+    @Setter(AccessLevel.NONE)
+    private Boolean activated;
     @NotNull
     @Column(name = "banned")
-    private boolean banned;
+    @Setter(AccessLevel.NONE)
+    private Boolean banned;
 
     @ManyToOne
     @JoinColumn(name = "security_id")
+    @Setter(AccessLevel.NONE)
     private SecurityEntity security;
 
     @PrePersist
@@ -36,61 +44,25 @@ public class UserEntity extends BaseEntity {
     }
 
     // Constructors
-    public UserEntity(String email, String username, String phoneNumber) {
+    public UserEntity(String email, String username, String phoneNumber, SecurityEntity securityEntity) {
         this.email = email;
         this.username = username;
         this.phoneNumber = phoneNumber;
+        this.security = securityEntity;
     }
 
     public UserEntity() { }
 
-    // Getters
-    public String getEmail() {
-        return email;
+    public void activateUser() {
+        this.activated = Boolean.TRUE;
     }
 
-    public String getUsername() {
-        return username;
+    public void deactivateUser() {
+        this.activated = Boolean.FALSE;
     }
 
-    public String getPhoneNumber() {
-        return phoneNumber;
+    public void banUser() {
+        this.banned = Boolean.TRUE;
     }
 
-    public boolean isActivated() {
-        return activated;
-    }
-
-    public boolean isBanned() {
-        return banned;
-    }
-
-    public SecurityEntity getSecurity() {
-        return security;
-    }
-
-    // Setters
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
-
-    public void setActivated(boolean activated) {
-        this.activated = activated;
-    }
-
-    public void setBanned(boolean banned) {
-        this.banned = banned;
-    }
-
-    public void setSecurity(SecurityEntity security) {
-        this.security = security;
-    }
 }
