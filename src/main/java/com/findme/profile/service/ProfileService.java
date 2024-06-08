@@ -11,23 +11,24 @@ import com.findme.profile.model.ProfileEntity;
 import com.findme.profile.repository.ProfileRepository;
 import com.findme.user.model.UserEntity;
 import com.findme.user.repository.UserRepository;
+import com.findme.utils.ApplicationCtxHolderUtil;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class ProfileService {
 
     private final ProfileRepository profileRepository;
     private final UserRepository userRepository;
     private final ProfileMapper profileMapper;
+    private static final Logger logger = LoggerFactory.getLogger(ApplicationCtxHolderUtil.class);
 
-    public ProfileService(ProfileRepository profileRepository, UserRepository userRepository, ProfileMapper profileMapper) {
-        this.profileRepository = profileRepository;
-        this.userRepository = userRepository;
-        this.profileMapper = profileMapper;
-    }
 
     public ProfileDto fetchProfile(long userId) {
         ProfileEntity profile = getProfile(userId);
@@ -39,6 +40,7 @@ public class ProfileService {
         UserEntity user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException("The user doesn't exist!"));
         Optional<ProfileEntity> profile = profileRepository.findByUserId(userId);
         if (profile.isEmpty()) {
+            logger.info(String.format("The profile already exist for the userId: %s", userId));
             throw new ConflictException("The profile already exist!");
         }
         try {
@@ -46,6 +48,7 @@ public class ProfileService {
             profileRepository.save(newProfile);
             return profileMapper.profileEntityToProfileDto(newProfile);
         } catch (Exception ex) {
+            logger.error("The profile cannot be successfully created!", ex);
             throw new InternalServerErrorException("Internal Server Error!");
         }
     }
@@ -61,6 +64,7 @@ public class ProfileService {
             profile.setBirthday(data.birthday());
             profileRepository.save(profile);
         } catch (Exception ex) {
+            logger.error("The profile cannot be successfully edited!", ex);
             throw new InternalServerErrorException("Internal Server Error!");
         }
 
@@ -74,6 +78,7 @@ public class ProfileService {
         if (profile.getFirstName().equals(data.firstName())
                 && profile.getLastName().equals(data.lastName())
                 && profile.getAboutMe().equals(data.aboutMe()) && profile.getBirthday().equals(data.birthday())) {
+            logger.info("The data sent in the request is identical as the profile data!");
             throw new ConflictException("Identical data sent!");
         }
     }
