@@ -1,6 +1,8 @@
 package com.findme.authorization;
 
 import com.findme.exceptions.AuthorizationException;
+import com.findme.user.model.UserEntity;
+import com.findme.user.repository.UserRepository;
 import com.findme.utils.JwtUtil;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.HttpServletRequest;
@@ -14,8 +16,11 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
 
     private final JwtUtil jwtUtil;
 
-    public AuthorizationInterceptor(JwtUtil jwtUtil) {
+    private final UserRepository userRepository;
+
+    public AuthorizationInterceptor(JwtUtil jwtUtil, UserRepository userRepository) {
         this.jwtUtil = jwtUtil;
+        this.userRepository = userRepository;
     }
 
     @Override
@@ -30,6 +35,7 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
                 }
                 Claims claims = jwtUtil.getClaimsFromToken(token, Boolean.TRUE);
                 Long userId = Long.parseLong(claims.get("id", String.class));
+                UserEntity user = userRepository.findById(userId).orElseThrow(() -> new AuthorizationException("Invalid authorization!"));
                 request.setAttribute("userId", userId);
             }
         }

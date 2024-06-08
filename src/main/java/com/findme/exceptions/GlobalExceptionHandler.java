@@ -74,7 +74,7 @@ public class GlobalExceptionHandler {
     private Object getRejectedValue(MethodArgumentNotValidException ex) {
         return Optional.ofNullable(ex.getFieldError())
                 .map(FieldError::getRejectedValue)
-                .orElse(UNKNOWN);
+                .orElse(ex.getFieldError().getDefaultMessage());
     }
 
     private List<String> getErrors(MethodArgumentNotValidException ex) {

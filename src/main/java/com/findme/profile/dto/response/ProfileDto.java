@@ -1,7 +1,6 @@
 package com.findme.profile.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.findme.profile.model.Gender;
 import com.findme.profileimage.dto.response.ProfileImageDto;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -21,7 +20,7 @@ public class ProfileDto {
     private String lastName;
     @NotNull
     @JsonProperty("gender")
-    private Gender gender;
+    private String gender;
     @NotNull
     @JsonProperty("birthday")
     private String birthday;

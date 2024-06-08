@@ -57,7 +57,7 @@ public class ProfileResponseBuilder {
         return new ProfileDto(id,
                 firstName,
                 lastName,
-                gender,
+                gender.getName(),
                 birthday,
                 aboutMe,
                 thumbnail);

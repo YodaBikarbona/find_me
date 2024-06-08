@@ -2,6 +2,7 @@ package com.findme.profileimage.service;
 
 import com.findme.exceptions.ConflictException;
 import com.findme.exceptions.InternalServerErrorException;
+import com.findme.exceptions.NotFoundException;
 import com.findme.profile.model.ProfileEntity;
 import com.findme.profile.repository.ProfileRepository;
 import com.findme.profileimage.dto.request.RequestNewProfileImageDto;
@@ -41,10 +42,7 @@ public class ProfileImageService {
 
     @Transactional
     public ProfileImageDto createNewProfileImage(RequestNewProfileImageDto newProfileImageDto, Long userId) throws BadRequestException, ConflictException {
-        ProfileEntity profile = profileRepository.findByUserId(userId);
-        if (profile == null) {
-            throw new BadRequestException("The profile doesn't exist!");
-        }
+        ProfileEntity profile = profileRepository.findByUserId(userId).orElseThrow(() -> new  NotFoundException("The profile doesn't exist!"));
         if (profile.getProfileImage() != null) {
             throw new ConflictException("The profile image has already exists!");
         }

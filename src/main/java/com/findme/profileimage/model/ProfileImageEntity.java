@@ -3,8 +3,12 @@ package com.findme.profileimage.model;
 import com.findme.base.model.BaseEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity(name = "profile_images")
+@Getter
+@Setter
 public class ProfileImageEntity extends BaseEntity {
 
     @NotNull
@@ -17,15 +21,5 @@ public class ProfileImageEntity extends BaseEntity {
     }
 
     public ProfileImageEntity() { }
-
-    // Getters
-    public String getUrl() {
-        return url;
-    }
-
-    // Setters
-    public void setUrl(String url) {
-        this.url = url;
-    }
 
 }

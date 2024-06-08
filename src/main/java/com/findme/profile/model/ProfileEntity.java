@@ -5,11 +5,16 @@ import com.findme.profileimage.model.ProfileImageEntity;
 import com.findme.user.model.UserEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDate;
 
 @Entity
 @Table(name = "profiles")
+@Getter
+@Setter
 public class ProfileEntity extends BaseEntity {
 
     @NotNull
@@ -22,6 +27,7 @@ public class ProfileEntity extends BaseEntity {
 
     @NotNull
     @Column(name = "gender")
+    @Setter(AccessLevel.NONE)
     private Gender gender;
 
     @NotNull
@@ -33,6 +39,7 @@ public class ProfileEntity extends BaseEntity {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
+    @Setter(AccessLevel.NONE)
     private UserEntity user;
 
     @ManyToOne
@@ -50,59 +57,5 @@ public class ProfileEntity extends BaseEntity {
     }
 
     public ProfileEntity() { }
-
-    // Getters
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public Gender getGender() {
-        return gender;
-    }
-
-    public LocalDate getBirthday() {
-        return birthday;
-    }
-
-    public String getAboutMe() {
-        return aboutMe;
-    }
-
-    public UserEntity getUser() {
-        return user;
-    }
-
-    public ProfileImageEntity getProfileImage() {
-        return profileImage;
-    }
-
-    // Setters
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    public void setGender(Gender gender) {
-        this.gender = gender;
-    }
-
-    public void setBirthday(LocalDate birthday) {
-        this.birthday = birthday;
-    }
-
-    public void setAboutMe(String aboutMe) {
-        this.aboutMe = aboutMe;
-    }
-
-    public void setProfileImage(ProfileImageEntity profileImage) {
-        this.profileImage = profileImage;
-    }
 
 }
