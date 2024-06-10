@@ -6,7 +6,8 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
-@Entity(name = "profile_images")
+@Entity
+@Table(name = "profile_images")
 @Getter
 @Setter
 public class ProfileImageEntity extends BaseEntity {

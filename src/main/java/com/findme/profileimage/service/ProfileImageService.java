@@ -13,8 +13,10 @@ import com.findme.profileimage.repository.ProfileImageRepository;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.storage.*;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import net.coobird.thumbnailator.Thumbnails;
 import org.apache.coyote.BadRequestException;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -23,22 +25,21 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 public class ProfileImageService {
 
     private final ProfileImageRepository profileImageRepository;
     private final ProfileRepository profileRepository;
     private final ProfileImageMapper profileImageMapper;
-
-    public ProfileImageService(ProfileImageRepository profileImageRepository, ProfileRepository profileRepository, ProfileImageMapper profileImageMapper) {
-        this.profileImageRepository = profileImageRepository;
-        this.profileRepository = profileRepository;
-        this.profileImageMapper = profileImageMapper;
-    }
+    @Value("${update.profile.image.duration}")
+    private int minutes;
 
     @Transactional
     public ProfileImageDto createNewProfileImage(RequestNewProfileImageDto newProfileImageDto, Long userId) throws BadRequestException, ConflictException {
@@ -46,14 +47,34 @@ public class ProfileImageService {
         if (profile.getProfileImage() != null) {
             throw new ConflictException("The profile image has already exists!");
         }
-        ByteArrayInputStream thumbnail = resizeImage(newProfileImageDto.getFile());
+        ByteArrayInputStream thumbnail = resizeImage(newProfileImageDto.file());
         try {
-            String url = uploadToGCS(newProfileImageDto.getFile(), thumbnail);
+            String url = uploadToGCS(newProfileImageDto.file(), thumbnail);
             ProfileImageEntity image = new ProfileImageEntity(url);
             profileImageRepository.save(image);
             profile.setProfileImage(image);
             profileRepository.save(profile);
             return profileImageMapper.profileImageEntityToProfileImageDto(image);
+        } catch (IOException e) {
+            throw new InternalServerErrorException("Something went wrong!");
+        }
+    }
+
+    @Transactional
+    public void updateNewProfileImage(RequestNewProfileImageDto newProfileImageDto, Long userId) throws NotFoundException, BadRequestException, ConflictException {
+        ProfileEntity profile = profileRepository.findByUserId(userId).orElseThrow(() -> new  NotFoundException("The profile doesn't exist!"));
+        if (profile.getProfileImage() == null) {
+            throw new NotFoundException("The profile image doesn't exist!");
+        }
+        allowUpdateProfileImage(profile.getProfileImage());
+        ProfileImageEntity oldImage = profile.getProfileImage();
+        ByteArrayInputStream thumbnail = resizeImage(newProfileImageDto.file());
+        try {
+            String url = uploadToGCS(newProfileImageDto.file(), thumbnail);
+            ProfileImageEntity image = new ProfileImageEntity(url);
+            profileImageRepository.save(image);
+            profile.setProfileImage(image);
+            profileRepository.save(profile);
         } catch (IOException e) {
             throw new InternalServerErrorException("Something went wrong!");
         }
@@ -142,4 +163,11 @@ public class ProfileImageService {
         Blob blob = storage.create(blobInfo, imageBytes);
         return String.format("%s%s/%s", gcsBaseUrl, bucketName, blob.getName());
     }
+
+    private void allowUpdateProfileImage(ProfileImageEntity image) {
+        if (!Instant.now().isAfter(image.getModifiedAt().plus(Duration.ofMinutes(minutes)))) {
+            throw new ConflictException(String.format("The profile image can be updated every %d minutes", minutes));
+        }
+    }
+
 }

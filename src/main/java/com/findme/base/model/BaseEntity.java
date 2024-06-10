@@ -2,6 +2,7 @@ package com.findme.base.model;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -9,6 +10,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 import java.time.Instant;
 
 @MappedSuperclass
+@Getter
 public abstract class BaseEntity {
 
     @Id
@@ -25,7 +27,4 @@ public abstract class BaseEntity {
     @Setter(AccessLevel.NONE)
     private Instant modifiedAt;
 
-    public Long getId() {
-        return id;
-    }
 }
