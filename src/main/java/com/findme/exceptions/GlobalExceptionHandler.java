@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-import java.text.MessageFormat;
 import java.time.Instant;
 import java.util.*;
 
@@ -56,12 +55,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpServletRequest request) {
         Object errorField = getErrorField(ex);
         Object rejectedValue = getRejectedValue(ex);
-        String message;
-        if (errorField.equals(UNKNOWN) || rejectedValue.equals(UNKNOWN)) {
-            message = ex.getAllErrors().getFirst().getDefaultMessage();
-        } else {
-            message = MessageFormat.format("Invalid field: {0}, rejected value: {1}", getErrorField(ex), getRejectedValue(ex));
-        }
+        String message = ex.getAllErrors().getFirst().getDefaultMessage();;
         return new ResponseEntity<>(new ErrorResponse(getRequestId(request), STATUS, Instant.now(), message, getErrors(ex)), HttpStatus.BAD_REQUEST);
     }
 
