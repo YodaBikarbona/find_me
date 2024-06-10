@@ -6,12 +6,14 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
 @Table(name = "users")
 @Getter
 @Setter
+@NoArgsConstructor
 public class UserEntity extends BaseEntity {
 
     @NotNull
@@ -50,8 +52,6 @@ public class UserEntity extends BaseEntity {
         this.phoneNumber = phoneNumber;
         this.security = securityEntity;
     }
-
-    public UserEntity() { }
 
     public void activateUser() {
         this.activated = Boolean.TRUE;

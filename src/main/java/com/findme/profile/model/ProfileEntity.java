@@ -7,6 +7,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
@@ -15,6 +16,7 @@ import java.time.LocalDate;
 @Table(name = "profiles")
 @Getter
 @Setter
+@NoArgsConstructor
 public class ProfileEntity extends BaseEntity {
 
     @NotNull
@@ -55,7 +57,5 @@ public class ProfileEntity extends BaseEntity {
         this.aboutMe = aboutMe;
         this.user = user;
     }
-
-    public ProfileEntity() { }
 
 }

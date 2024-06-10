@@ -1,4 +1,4 @@
-package com.findme.security;
+package com.findme.config;
 
 import org.passay.*;
 import org.springframework.context.annotation.Bean;

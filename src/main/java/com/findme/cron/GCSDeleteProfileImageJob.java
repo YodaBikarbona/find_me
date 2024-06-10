@@ -2,8 +2,8 @@ package com.findme.cron;
 
 import com.findme.profileimage.model.ProfileImageEntity;
 import com.findme.profileimage.repository.ProfileImageRepository;
-import com.findme.profileimage.service.ProfileImageService;
 import com.findme.utils.ApplicationCtxHolderUtil;
+import com.findme.utils.GCSUtil;
 import com.google.cloud.storage.BlobId;
 import com.google.cloud.storage.Storage;
 import lombok.RequiredArgsConstructor;
@@ -22,8 +22,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class GCSDeleteProfileImageJob implements Job {
 
-    private final ProfileImageService profileImageService;
     private final ProfileImageRepository profileImageRepository;
+    private final GCSUtil gcsUtil;
     private static final Logger logger = LoggerFactory.getLogger(ApplicationCtxHolderUtil.class);
 
 
@@ -51,7 +51,7 @@ public class GCSDeleteProfileImageJob implements Job {
     private boolean deleteGCSImage(String url) {
         boolean removed = Boolean.FALSE;
         try {
-            Storage storage = profileImageService.getStorage();
+            Storage storage = gcsUtil.getStorage();
             String bucketName = System.getenv("BUCKET_NAME");
             String filename = Arrays.stream(url.split(String.format("/%s/", bucketName))).toList().getLast();
             BlobId blobId = BlobId.of(bucketName, filename);
