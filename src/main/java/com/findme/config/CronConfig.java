@@ -29,7 +29,7 @@ public class CronConfig {
         return TriggerBuilder.newTrigger()
                 .forJob(jobDetail())
                 .withIdentity("GCSDeleteProfileImageJobTrigger")
-                .withSchedule(dailyAtHourAndMinute(12, 55))  // 00:00 UTC
+                .withSchedule(dailyAtHourAndMinute(0, 0))  // 00:00 UTC
                 .build();
     }
 
