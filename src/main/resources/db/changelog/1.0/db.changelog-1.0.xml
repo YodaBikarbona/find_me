@@ -23,4 +23,12 @@
         <sqlFile path="create_profile_table.sql" relativeToChangelogFile="true"/>
     </changeSet>
 
+    <changeSet id="create-post-table" author="YodaBikarbona">
+        <sqlFile path="create_post_table.sql" relativeToChangelogFile="true"/>
+    </changeSet>
+
+    <changeSet id="create-post-image-table" author="YodaBikarbona">
+        <sqlFile path="create_post_image_table.sql" relativeToChangelogFile="true"/>
+    </changeSet>
+
 </databaseChangeLog>

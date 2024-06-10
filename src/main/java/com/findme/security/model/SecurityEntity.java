@@ -9,6 +9,7 @@ import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -19,6 +20,7 @@ import java.util.Base64;
 @Table(name = "users_security")
 @Getter
 @Setter
+@NoArgsConstructor
 public class SecurityEntity extends BaseEntity {
 
     @NotNull
@@ -42,8 +44,6 @@ public class SecurityEntity extends BaseEntity {
     public SecurityEntity(String password) {
         this.password = encryptPassword(password);
     }
-
-    public SecurityEntity() { }
 
     // Public methods
     public void generateTokenSecret() {
