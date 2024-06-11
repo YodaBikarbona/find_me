@@ -4,6 +4,7 @@ import com.findme.base.model.BaseEntity;
 import com.findme.postimage.model.PostImageEntity;
 import com.findme.profile.model.ProfileEntity;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
@@ -31,10 +32,14 @@ public class PostEntity extends BaseEntity {
 
     @NotNull
     @Column(name = "longitude")
+    @Min(-180)
+    @Max(180)
     private float longitude;
 
     @NotNull
     @Column(name = "latitude")
+    @Min(-90)
+    @Max(90)
     private float latitude;
 
     @ManyToOne

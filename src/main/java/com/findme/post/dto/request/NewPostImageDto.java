@@ -8,7 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Getter
 @Setter
-public class PostImageDto {
+public class NewPostImageDto {
     @IsOversize
     @IsImage
     private MultipartFile file;
