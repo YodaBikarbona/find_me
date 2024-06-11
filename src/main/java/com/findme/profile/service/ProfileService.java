@@ -7,6 +7,7 @@ import com.findme.profile.dto.request.EditProfileDto;
 import com.findme.profile.dto.request.NewProfileDto;
 import com.findme.profile.dto.response.ProfileDto;
 import com.findme.profile.mapper.ProfileMapper;
+import com.findme.profile.model.Gender;
 import com.findme.profile.model.ProfileEntity;
 import com.findme.profile.repository.ProfileRepository;
 import com.findme.user.model.UserEntity;
@@ -39,12 +40,12 @@ public class ProfileService {
     public ProfileDto createNewProfile(NewProfileDto data, long userId) throws ConflictException, InternalServerErrorException {
         UserEntity user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException("The user doesn't exist!"));
         Optional<ProfileEntity> profile = profileRepository.findByUserId(userId);
-        if (profile.isEmpty()) {
+        if (profile.isPresent()) {
             logger.info(String.format("The profile already exist for the userId: %s", userId));
             throw new ConflictException("The profile already exist!");
         }
         try {
-            ProfileEntity newProfile = new ProfileEntity(data.firstName(), data.lastName(), data.gender(), data.birthday(), data.aboutMe(), user);
+            ProfileEntity newProfile = new ProfileEntity(data.firstName(), data.lastName(), Gender.findByName(data.gender()), data.birthday(), data.aboutMe(), user);
             profileRepository.save(newProfile);
             return profileMapper.profileEntityToProfileDto(newProfile);
         } catch (Exception ex) {

@@ -6,10 +6,10 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class PostRequestDto {
+public class RequestPostDto {
     @Valid
     private NewPostDto newPostDto;
 
     @Valid
-    private PostImageDto postImageDto;
+    private NewPostImageDto postImageDto;
 }
