@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 
 
 @RestController
-@CrossOrigin(origins = "*", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE})
 @RequestMapping("/api/profile/image")
 @RequiredArgsConstructor
 public class ProfileImageController {
@@ -28,7 +27,7 @@ public class ProfileImageController {
         return profileImageService.createNewProfileImage(image, Long.parseLong(request.getAttribute("userId").toString()));
     }
 
-    @ResponseStatus(HttpStatus.CREATED)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     @PatchMapping(value = "/update", produces = MediaType.APPLICATION_JSON_VALUE)
     @Authorization
     public void updateProfileImage(@Valid @ModelAttribute RequestNewProfileImageDto image, HttpServletRequest request) throws BadRequestException {

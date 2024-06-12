@@ -67,7 +67,7 @@ public class ImageUtil {
         if (imagePurpose.equals("post")) {
             return 10000;
         }
-        return 2000;
+        return 3000;
     }
 
     private int getImageKindMaxResolution(String imagePurpose) {
