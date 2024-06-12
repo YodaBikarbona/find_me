@@ -4,6 +4,8 @@ import com.findme.exceptions.InternalServerErrorException;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.storage.*;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -16,6 +18,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class GCSUtil {
 
+    private static final Logger log = LoggerFactory.getLogger(GCSUtil.class);
     private final ImageUtil imageUtil;
 
     public Storage getStorage() throws IOException {
@@ -39,7 +42,12 @@ public class GCSUtil {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         byteArrayOutputStream.write(image.readAllBytes());
         byte[] imageBytes = byteArrayOutputStream.toByteArray();
+        long startTime = System.currentTimeMillis();
+        log.info(String.format("Sending image to GCS, timestamp %s", startTime));
         Blob blob = storage.create(blobInfo, imageBytes);
+        long endTime = System.currentTimeMillis();
+        log.info(String.format("Image uploaded to GCS, timestamp %s", startTime));
+        log.info(String.format("Upload duration %s", startTime - endTime));
         return String.format("%s%s/%s", gcsBaseUrl, bucketName, blob.getName());
     }
 
