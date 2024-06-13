@@ -67,14 +67,14 @@ public class ImageUtil {
         if (imagePurpose.equals("post")) {
             return 10000;
         }
-        return 3000;
+        return 5000;
     }
 
     private int getImageKindMaxResolution(String imagePurpose) {
         if (imagePurpose.equals("post")) {
             return 5000;
         }
-        return 450;
+        return 2000;
     }
 
     private ByteArrayOutputStream cutTheImage(BufferedImage image, int width, int height, String extension, @NotNull String imagePurpose) throws IOException {
