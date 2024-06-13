@@ -11,6 +11,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 
+import java.util.Objects;
+
 @Component
 public class AuthorizationInterceptor implements HandlerInterceptor {
 
@@ -25,12 +27,12 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
-            throws Exception {
+            throws AuthorizationException {
         if (handler instanceof HandlerMethod handlerMethod) {
             Authorization authorization = handlerMethod.getMethodAnnotation(Authorization.class);
             if (authorization != null) {
                 String token = request.getHeader("Authorization");
-                if (token == null || token.isEmpty()) {
+                if (Objects.isNull(token) || token.isEmpty()) {
                     throw new AuthorizationException("Authorization token is missing!");
                 }
                 Claims claims = jwtUtil.getClaimsFromToken(token, Boolean.TRUE);
