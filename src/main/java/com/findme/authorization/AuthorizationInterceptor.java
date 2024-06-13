@@ -30,12 +30,18 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
             throws AuthorizationException {
         if (handler instanceof HandlerMethod handlerMethod) {
             Authorization authorization = handlerMethod.getMethodAnnotation(Authorization.class);
-            if (authorization != null) {
+            RefreshAuthorization refreshAuthorization = handlerMethod.getMethodAnnotation(RefreshAuthorization.class);
+            if (!Objects.isNull(authorization) || !Objects.isNull(refreshAuthorization)) {
                 String token = request.getHeader("Authorization");
                 if (Objects.isNull(token) || token.isEmpty()) {
                     throw new AuthorizationException("Authorization token is missing!");
                 }
-                Claims claims = jwtUtil.getClaimsFromToken(token, Boolean.TRUE);
+                Claims claims;
+                if (!Objects.isNull(authorization)) {
+                    claims = jwtUtil.getClaimsFromToken(token, Boolean.TRUE);
+                } else {
+                    claims = jwtUtil.getClaimsFromToken(token, Boolean.FALSE);
+                }
                 Long userId = Long.parseLong(claims.get("id", String.class));
                 UserEntity user = userRepository.findById(userId).orElseThrow(() -> new AuthorizationException("Invalid authorization!"));
                 request.setAttribute("userId", userId);
