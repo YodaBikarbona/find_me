@@ -4,6 +4,8 @@ import com.findme.post.dto.response.MapPostDto;
 import com.findme.post.dto.response.PostDto;
 import com.findme.post.dto.response.PostProfileDto;
 import com.findme.post.model.PostEntity;
+import com.findme.postcomment.dto.response.PostCommentDto;
+import com.findme.postcomment.mapper.PostCommentMapper;
 import com.findme.postimage.dto.response.PostImageDto;
 import com.findme.postimage.mapper.PostImageMapper;
 import lombok.RequiredArgsConstructor;
@@ -11,7 +13,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 @Component
@@ -19,13 +20,17 @@ import java.util.stream.Collectors;
 public class PostMapper {
 
     private final PostImageMapper postImageMapper;
+    private final PostCommentMapper postCommentMapper;
 
     public PostDto postEntityToPostDto(PostEntity post) {
         List<PostImageDto> images = post.getPostImage().stream()
                 .map(postImageMapper::postImageEntityToPostImageDto)
-                .collect(Collectors.toList());
+                .toList();
+        List<PostCommentDto> comments = post.getPostComment().stream()
+                .map(postCommentMapper::postCommentEntityToPostCommentDto)
+                .toList();
         PostProfileDto profile = new PostProfileDto(post.getProfile().getId(), post.getProfile().getUser().getUsername());
-        return new PostDto(post.getId(), post.getDescription(), post.getViews(), post.getLongitude(), post.getLatitude(), images, profile);
+        return new PostDto(post.getId(), post.getDescription(), post.getViews(), post.getLongitude(), post.getLatitude(), images, comments, profile);
     }
 
     public List<MapPostDto> postEntityToMapPosts(List<PostEntity> postEntities) {

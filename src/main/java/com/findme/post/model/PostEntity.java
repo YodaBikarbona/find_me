@@ -1,6 +1,7 @@
 package com.findme.post.model;
 
 import com.findme.base.model.BaseEntity;
+import com.findme.postcomment.model.PostCommentEntity;
 import com.findme.postimage.model.PostImageEntity;
 import com.findme.profile.model.ProfileEntity;
 import jakarta.persistence.*;
@@ -48,6 +49,9 @@ public class PostEntity extends BaseEntity {
 
     @OneToMany(mappedBy = "post")
     private List<PostImageEntity> postImage;
+
+    @OneToMany(mappedBy = "post")
+    private List<PostCommentEntity> postComment;
 
     // Constructors
     public PostEntity(String description, float longitude, float latitude, ProfileEntity profile) {

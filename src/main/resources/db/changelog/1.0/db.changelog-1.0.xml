@@ -31,4 +31,8 @@
         <sqlFile path="create_post_image_table.sql" relativeToChangelogFile="true"/>
     </changeSet>
 
+    <changeSet id="create-post-comment-table" author="YodaBikarbona">
+        <sqlFile path="create_post_comment_table.sql" relativeToChangelogFile="true"/>
+    </changeSet>
+
 </databaseChangeLog>

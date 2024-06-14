@@ -71,7 +71,7 @@ public class ProfileService {
 
     }
 
-    private ProfileEntity getProfile(long userId) throws NotFoundException {
+    public ProfileEntity getProfile(long userId) throws NotFoundException {
         return profileRepository.findByUserId(userId).orElseThrow(() -> new NotFoundException("The profile doesn't exist!"));
     }
 
