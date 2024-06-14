@@ -38,11 +38,11 @@ public class PostController {
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @Authorization
-    public List<MapPostDto> getPosts(@Min(-180) @Max(180) @NotNull @RequestParam float longitude,
-                                     @Min(-90) @Max(90) @NotNull @RequestParam float latitude,
-                                     @Nullable @Min(1) @RequestParam Integer radius,
-                                     @NotNull @Min(5) @Max(50) @RequestParam int limit,
-                                     HttpServletRequest request) throws InternalServerErrorException {
+    public List<MapPostDto> getMapPosts(@Min(-180) @Max(180) @NotNull @RequestParam float longitude,
+                                        @Min(-90) @Max(90) @NotNull @RequestParam float latitude,
+                                        @Nullable @Min(1) @RequestParam Integer radius,
+                                        @NotNull @Min(5) @Max(100) @RequestParam int limit,
+                                        HttpServletRequest request) throws InternalServerErrorException {
         return postService.getPosts(new RequestPostsDto(longitude, latitude, radius, limit), Long.parseLong(request.getAttribute("userId").toString()));
     }
 
