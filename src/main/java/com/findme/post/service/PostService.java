@@ -12,7 +12,7 @@ import com.findme.post.repository.PostRepository;
 import com.findme.postimage.model.PostImageEntity;
 import com.findme.postimage.service.PostImageService;
 import com.findme.profile.model.ProfileEntity;
-import com.findme.profile.repository.ProfileRepository;
+import com.findme.profile.service.ProfileService;
 import com.findme.utils.ApplicationCtxHolderUtil;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -30,13 +30,13 @@ public class PostService {
 
     private final PostRepository postRepository;
     private final PostImageService postImageService;
-    private final ProfileRepository profileRepository;
     private final PostMapper postMapper;
+    private final ProfileService profileService;
     private static final Logger logger = LoggerFactory.getLogger(ApplicationCtxHolderUtil.class);
 
     @Transactional
     public PostDto createNewPost(RequestPostDto data, long userId) throws InternalServerErrorException {
-        ProfileEntity profile = getProfile(userId);
+        ProfileEntity profile = profileService.getProfile(userId);
         try {
             PostEntity post = new PostEntity(data.getNewPostDto().getDescription(), data.getNewPostDto().getLongitude(), data.getNewPostDto().getLatitude(), profile);
             postRepository.save(post);
@@ -52,7 +52,7 @@ public class PostService {
     }
 
     public List<MapPostDto> getPosts(RequestPostsDto postsDto, long userId) throws InternalServerErrorException {
-        ProfileEntity profile = getProfile(userId);
+        ProfileEntity profile = profileService.getProfile(userId);
         List<PostEntity> posts;
         if (Objects.isNull(postsDto.radius())) {
             posts = postRepository.findNearestPosts(profile.getId(), postsDto.longitude(), postsDto.latitude(), postsDto.limit());
@@ -62,8 +62,9 @@ public class PostService {
         return postMapper.postEntityToMapPosts(posts);
     }
 
-    private ProfileEntity getProfile(long userId) throws NotFoundException {
-        return profileRepository.findByUserId(userId).orElseThrow(() -> new NotFoundException("The profile doesn't exist!"));
+    public PostDto getPost(long postId) throws NotFoundException {
+        PostEntity post = postRepository.findById(postId).orElseThrow(() -> new NotFoundException("The post doesn't exist!"));
+        return postMapper.postEntityToPostDto(post);
     }
 
 }
