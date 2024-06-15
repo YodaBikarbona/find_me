@@ -34,8 +34,8 @@ public class PostCommentService {
             PostCommentEntity postCommentEntity = new PostCommentEntity(newPostCommentDto.comment(), post, profile);
             postCommentRepository.save(postCommentEntity);
             return postCommentMapper.postCommentEntityToPostCommentDto(postCommentEntity);
-        } catch (Exception e) {
-            logger.error("Error while creating new post comment! ex:", e);
+        } catch (Exception ex) {
+            logger.error("Error while creating new post comment! ex:", ex);
             throw new InternalServerErrorException("Something went wrong!");
         }
 

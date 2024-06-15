@@ -17,7 +17,7 @@ public class GenderValidator implements ConstraintValidator<ValidGender, String>
     public boolean isValid(String gender, ConstraintValidatorContext context) {
         try {
             Gender.findByName(gender);
-        } catch (Exception e) {
+        } catch (Exception ex) {
             return Boolean.FALSE;
         }
         return Boolean.TRUE;

@@ -43,8 +43,8 @@ public class GCSDeleteProfileImageJob implements Job {
         try {
             profileImageRepository.delete(image);
             logger.info("The image has successfully removed!");
-        } catch (Exception e) {
-            logger.error("The image cannot be removed!", e);
+        } catch (Exception ex) {
+            logger.error("The image cannot be removed!", ex);
         }
     }
 

@@ -57,7 +57,7 @@ public class JwtUtil {
                     .build()
                     .parseClaimsJws(token);
             return true;
-        } catch (Exception e) {
+        } catch (Exception ex) {
             return false;
         }
     }
@@ -87,7 +87,7 @@ public class JwtUtil {
                 throw new AuthorizationException(AUTHORIZATION_ERROR_MESSAGE);
             }
             return claims;
-        } catch (Exception e) {
+        } catch (Exception ex) {
             throw new AuthorizationException(AUTHORIZATION_ERROR_MESSAGE);
         }
     }

@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 public class PostImageMapper {
 
     public PostImageDto postImageEntityToPostImageDto(PostImageEntity image) {
-        return new PostImageDto(image.getId(), image.getUrl(), image.getPost().getId());
+        return new PostImageDto(image.getId(), image.getUrl());
     }
 
 }
