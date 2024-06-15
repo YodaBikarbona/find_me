@@ -3,9 +3,11 @@ package com.findme.post.controller;
 import com.findme.authorization.Authorization;
 import com.findme.exceptions.InternalServerErrorException;
 import com.findme.exceptions.NotFoundException;
+import com.findme.post.dto.request.RequestMyPostsDto;
 import com.findme.post.dto.request.RequestPostDto;
 import com.findme.post.dto.request.RequestPostsDto;
 import com.findme.post.dto.response.MapPostDto;
+import com.findme.post.dto.response.MyPostsDto;
 import com.findme.post.dto.response.PostDto;
 import com.findme.post.service.PostService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -44,7 +46,7 @@ public class PostController {
                                         @Nullable @Min(1) @RequestParam Integer radius,
                                         @NotNull @Min(5) @Max(100) @RequestParam int limit,
                                         HttpServletRequest request) throws InternalServerErrorException {
-        return postService.getPosts(new RequestPostsDto(longitude, latitude, radius, limit), Long.parseLong(request.getAttribute("userId").toString()));
+        return postService.getMapPosts(new RequestPostsDto(longitude, latitude, radius, limit), Long.parseLong(request.getAttribute("userId").toString()));
     }
 
     @ResponseStatus(HttpStatus.OK)
@@ -52,6 +54,15 @@ public class PostController {
     @Authorization
     public PostDto getPost(@PathVariable long id) throws NotFoundException {
         return postService.getPost(id);
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping(value = "/myPosts", produces = MediaType.APPLICATION_JSON_VALUE)
+    @Authorization
+    public List<MyPostsDto> getMyPost(@Nullable @Min(0) @RequestParam Integer offset,
+                                      @NotNull @Min(5) @Max(100) @RequestParam int limit,
+                                      HttpServletRequest request) throws NotFoundException {
+        return postService.getMyPosts(new RequestMyPostsDto(offset, limit), Long.parseLong(request.getAttribute("userId").toString()));
     }
 
 }

@@ -1,6 +1,7 @@
 package com.findme.post.mapper;
 
 import com.findme.post.dto.response.MapPostDto;
+import com.findme.post.dto.response.MyPostsDto;
 import com.findme.post.dto.response.PostDto;
 import com.findme.post.dto.response.PostProfileDto;
 import com.findme.post.model.PostEntity;
@@ -38,6 +39,17 @@ public class PostMapper {
         for (PostEntity postEntity: postEntities) {
             MapPostDto mapPostDto = new MapPostDto(postEntity.getId(), postEntity.getLongitude(), postEntity.getLatitude());
             posts.add(mapPostDto);
+        }
+        return posts;
+    }
+
+    public List<MyPostsDto> postEntityToMyPosts(List<PostEntity> postEntities) {
+        List<MyPostsDto> posts = new ArrayList<>();
+        for (PostEntity postEntity: postEntities) {
+            List<PostImageDto> images = postEntity.getPostImage().stream()
+                    .map(postImageMapper::postImageEntityToPostImageDto)
+                    .toList();
+            posts.add(new MyPostsDto(postEntity.getId(), images));
         }
         return posts;
     }

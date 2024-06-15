@@ -1,6 +1,7 @@
 package com.findme.post.repository;
 
 import com.findme.post.model.PostEntity;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -36,5 +37,10 @@ public interface PostRepository extends JpaRepository<PostEntity, Long> {
             nativeQuery = true
     )
     List<PostEntity> findNearestPostsWithinRadius(@Param("profile_id") long profileId, @Param("longitude") float longitude,@Param("latitude") float latitude,@Param("radius") int radius, @Param("limit") int limit);
+
+    @Query(
+            value = "SELECT pe FROM PostEntity pe WHERE pe.profile.id = :profile_id ORDER BY pe.createdAt"
+    )
+    List<PostEntity> findMyPosts(@Param("profile_id") long profileId, Pageable pageable);
 
 }

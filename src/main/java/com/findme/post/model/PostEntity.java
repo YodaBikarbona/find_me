@@ -10,7 +10,6 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +17,6 @@ import java.util.List;
 @Entity
 @Table(name = "posts")
 @Getter
-@Setter
 @NoArgsConstructor
 public class PostEntity extends BaseEntity {
 
@@ -67,6 +65,10 @@ public class PostEntity extends BaseEntity {
             this.postImage = new ArrayList<>();
         }
         this.postImage.add(postImage);
+    }
+
+    public void increaseViews() {
+        this.views++;
     }
 
 }
