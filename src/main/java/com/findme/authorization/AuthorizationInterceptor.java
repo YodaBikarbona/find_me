@@ -43,7 +43,7 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
                     claims = jwtUtil.getClaimsFromToken(token, Boolean.FALSE);
                 }
                 Long userId = Long.parseLong(claims.get("id", String.class));
-                UserEntity user = userRepository.findById(userId).orElseThrow(() -> new AuthorizationException("Invalid authorization!"));
+                UserEntity user = userRepository.findById(userId).orElseThrow(() -> new AuthorizationException("Invalid credentials!"));
                 request.setAttribute("userId", userId);
             }
         }

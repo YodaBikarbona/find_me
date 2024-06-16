@@ -1,13 +1,11 @@
 package com.findme.user.service;
 
 import com.findme.exceptions.AuthorizationException;
-import com.findme.exceptions.BadRequestException;
 import com.findme.exceptions.InternalServerErrorException;
 import com.findme.security.model.SecurityEntity;
 import com.findme.security.repository.SecurityRepository;
 import com.findme.user.dto.request.RequestLoginDto;
 import com.findme.user.dto.request.RequestNewUserDto;
-import com.findme.user.dto.response.NewUserDto;
 import com.findme.user.dto.response.CredentialsDto;
 import com.findme.user.mapper.UserMapper;
 import com.findme.user.model.UserEntity;
@@ -31,13 +29,12 @@ public class UserService {
     private static final Logger logger = LoggerFactory.getLogger(ApplicationCtxHolderUtil.class);
 
     @Transactional
-    public NewUserDto registerUser(RequestNewUserDto newUserDto) throws InternalServerErrorException {
+    public void registerUser(RequestNewUserDto newUserDto) throws InternalServerErrorException {
         try {
             SecurityEntity security = new SecurityEntity(newUserDto.getPassword());
             securityRepository.save(security);
             UserEntity userEntity = new UserEntity(newUserDto.getEmail(), newUserDto.getUsername(), newUserDto.getPhoneNumber(), security);
             userRepository.save(userEntity);
-            return userMapper.userEntityToNewUserDao(userEntity);
         } catch (Exception ex) {
             logger.error("The user cannot be successfully registered!");
             throw new InternalServerErrorException("Internal Server Error!");
@@ -47,9 +44,9 @@ public class UserService {
 
     @Transactional
     public CredentialsDto loginUser(RequestLoginDto requestLoginDto) throws InternalServerErrorException {
-        UserEntity user = userRepository.findByUsername(requestLoginDto.getUsername())
+        UserEntity user = userRepository.findByUsername(requestLoginDto.username())
                 .orElseThrow(() -> new AuthorizationException("Invalid credentials!"));
-        matchPasswords(requestLoginDto.getPassword(), user.getSecurity().getPassword());
+        matchPasswords(requestLoginDto.password(), user.getSecurity().getPassword());
         return generateNewCredentials(user);
     }
 
@@ -64,7 +61,7 @@ public class UserService {
         try {
             user.getSecurity().generateTokenSecret();
             securityRepository.save(user.getSecurity());
-            return userMapper.userEntityToResponseLoginDao(user);
+            return userMapper.userEntityToResponseCredentialsDto(user);
         } catch (Exception ex) {
             logger.error("The user cannot get new credentials!", ex);
             throw new InternalServerErrorException("Internal Server Error!");
@@ -72,10 +69,10 @@ public class UserService {
     }
 
 
-    private void matchPasswords(String rawPassword, String password) throws BadRequestException {
+    private void matchPasswords(String rawPassword, String password) throws AuthorizationException {
         if (!encoder.matches(rawPassword, password)) {
             logger.info("The passwords aren't identical!");
-            throw new BadRequestException("Invalid credentials!");
+            throw new AuthorizationException("Invalid credentials!");
         }
     }
 

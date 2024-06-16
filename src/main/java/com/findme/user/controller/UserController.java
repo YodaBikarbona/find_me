@@ -4,7 +4,6 @@ import com.findme.authorization.RefreshAuthorization;
 import com.findme.exceptions.InternalServerErrorException;
 import com.findme.user.dto.request.RequestLoginDto;
 import com.findme.user.dto.request.RequestNewUserDto;
-import com.findme.user.dto.response.NewUserDto;
 import com.findme.user.dto.response.CredentialsDto;
 import com.findme.user.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -25,8 +24,8 @@ public class UserController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(value = "/register", produces = MediaType.APPLICATION_JSON_VALUE)
-    public NewUserDto register(@Valid @RequestBody RequestNewUserDto user) throws InternalServerErrorException {
-        return userService.registerUser(user);
+    public void register(@Valid @RequestBody RequestNewUserDto user) throws InternalServerErrorException {
+        userService.registerUser(user);
     }
 
     @ResponseStatus(HttpStatus.OK)
