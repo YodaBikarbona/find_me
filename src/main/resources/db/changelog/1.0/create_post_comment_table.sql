@@ -10,7 +10,7 @@ CREATE TABLE post_comments (
     profile_id BIGINT NOT NULL,
 
     -- Constraints
-    CONSTRAINT fk_post_comment_id FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE,
-    CONSTRAINT fk_post_profile_id FOREIGN KEY (profile_id) REFERENCES profiles(id) ON DELETE CASCADE
+    CONSTRAINT fk_post_comment_post_id FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE,
+    CONSTRAINT fk_post_comment_profile_id FOREIGN KEY (profile_id) REFERENCES profiles(id) ON DELETE CASCADE
 
 )

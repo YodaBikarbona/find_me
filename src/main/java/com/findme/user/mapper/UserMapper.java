@@ -1,6 +1,5 @@
 package com.findme.user.mapper;
 
-import com.findme.user.dto.response.NewUserDto;
 import com.findme.user.dto.response.CredentialsDto;
 import com.findme.user.model.UserEntity;
 import com.findme.utils.JwtUtil;
@@ -15,11 +14,7 @@ public class UserMapper {
         this.jwtUtil = jwtUtil;
     }
 
-    public NewUserDto userEntityToNewUserDao(UserEntity userEntity) {
-        return new NewUserDto(userEntity.getId(), userEntity.getEmail(), userEntity.getUsername(), userEntity.getPhoneNumber());
-    }
-
-    public CredentialsDto userEntityToResponseLoginDao(UserEntity userEntity) {
+    public CredentialsDto userEntityToResponseCredentialsDto(UserEntity userEntity) {
         String accessToken = jwtUtil.generateToken(userEntity, Boolean.TRUE);
         String refreshToken = jwtUtil.generateToken(userEntity, Boolean.FALSE);
         return new CredentialsDto(userEntity.getId(), accessToken, refreshToken);
