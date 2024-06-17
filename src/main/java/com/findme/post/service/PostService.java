@@ -40,7 +40,7 @@ public class PostService {
     private static final Logger logger = LoggerFactory.getLogger(ApplicationCtxHolderUtil.class);
 
     @Transactional
-    public PostDto createNewPost(RequestPostDto data, long userId) throws InternalServerErrorException {
+    public void createNewPost(RequestPostDto data, long userId) throws InternalServerErrorException {
         ProfileEntity profile = profileService.getProfile(userId);
         try {
             PostEntity post = new PostEntity(data.getNewPostDto().getDescription(), data.getNewPostDto().getLongitude(), data.getNewPostDto().getLatitude(), profile);
@@ -49,7 +49,6 @@ public class PostService {
             PostImageEntity image = postImageService.createNewPostImage(data.getPostImageDto().getFile(), post);
             post.addPostImage(image);
             logger.info("The post image has successfully created!");
-            return postMapper.postEntityToPostDto(post);
         } catch (Exception ex) {
             logger.error("The post cannot be successfully created!", ex);
             throw new InternalServerErrorException("Internal Server Error!");

@@ -34,8 +34,8 @@ public class PostController {
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(value = "/new", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @Authorization
-    public PostDto createNewProfile(@Valid @ModelAttribute RequestPostDto postRequestDto, HttpServletRequest request) throws InternalServerErrorException {
-        return postService.createNewPost(postRequestDto, Long.parseLong(request.getAttribute("userId").toString()));
+    public void createNewProfile(@Valid @ModelAttribute RequestPostDto postRequestDto, HttpServletRequest request) throws InternalServerErrorException {
+        postService.createNewPost(postRequestDto, Long.parseLong(request.getAttribute("userId").toString()));
     }
 
     @ResponseStatus(HttpStatus.OK)
