@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.Instant;
 import java.util.List;
 
 @Repository
@@ -42,5 +43,8 @@ public interface PostRepository extends JpaRepository<PostEntity, Long> {
             value = "SELECT pe FROM PostEntity pe WHERE pe.profile.id = :profile_id ORDER BY pe.createdAt"
     )
     List<PostEntity> findMyPosts(@Param("profile_id") long profileId, Pageable pageable);
+
+    @Query("SELECT COUNT(pe) FROM PostEntity pe WHERE pe.createdAt BETWEEN :startDate AND :endDate")
+    long countByCreatedAtBetween(Instant startDate, Instant endDate);
 
 }

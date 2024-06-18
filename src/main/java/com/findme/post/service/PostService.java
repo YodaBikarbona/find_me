@@ -1,6 +1,7 @@
 package com.findme.post.service;
 
 import com.findme.exceptions.InternalServerErrorException;
+import com.findme.exceptions.NoPermissionException;
 import com.findme.exceptions.NotFoundException;
 import com.findme.post.dto.request.RequestMyPostsDto;
 import com.findme.post.dto.request.RequestPostDto;
@@ -25,6 +26,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Objects;
 
@@ -40,8 +45,16 @@ public class PostService {
     private static final Logger logger = LoggerFactory.getLogger(ApplicationCtxHolderUtil.class);
 
     @Transactional
-    public void createNewPost(RequestPostDto data, long userId) throws InternalServerErrorException {
+    public void createNewPost(RequestPostDto data, long userId) throws InternalServerErrorException, NoPermissionException {
         ProfileEntity profile = profileService.getProfile(userId);
+        if (!profile.getUser().getActivated()) {
+            throw new NoPermissionException("The profile is not active!");
+        }
+        Instant startDay = Instant.now().atZone(ZoneOffset.UTC).toLocalDate().atStartOfDay(ZoneOffset.UTC).toInstant();
+        Instant endDay = LocalDateTime.of(LocalDateTime.now().toLocalDate(), LocalTime.MAX).atZone(ZoneOffset.UTC).toInstant();
+        if (postRepository.countByCreatedAtBetween(startDay, endDay) > 4) {
+            throw new NoPermissionException("The limit of 5 posts are reached!");
+        }
         try {
             PostEntity post = new PostEntity(data.getNewPostDto().getDescription(), data.getNewPostDto().getLongitude(), data.getNewPostDto().getLatitude(), profile);
             postRepository.save(post);
