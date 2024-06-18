@@ -16,6 +16,9 @@ public class IsOversizeValidator implements ConstraintValidator<IsOversize, Mult
 
     @Override
     public boolean isValid(MultipartFile file, ConstraintValidatorContext context) {
+        if (file == null) {
+            return true;
+        }
         final int maxSize = (10 * (1024 * 1024));
         return !(file.getSize() > maxSize);
     }
