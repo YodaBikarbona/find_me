@@ -10,6 +10,9 @@ public class ProfileResponseBuilder {
     private Long id;
     private String firstName;
     private String lastName;
+    private String username;
+    private String email;
+    private String phoneNumber;
     private Gender gender;
     private String birthday;
     private String aboutMe;
@@ -30,6 +33,21 @@ public class ProfileResponseBuilder {
 
     public ProfileResponseBuilder lastName(String lastName) {
         this.lastName = lastName;
+        return this;
+    }
+
+    public ProfileResponseBuilder username(String username) {
+        this.username = username;
+        return this;
+    }
+
+    public ProfileResponseBuilder email(String email) {
+        this.email = email;
+        return this;
+    }
+
+    public ProfileResponseBuilder phoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
         return this;
     }
 
@@ -57,6 +75,9 @@ public class ProfileResponseBuilder {
         return new ProfileDto(id,
                 firstName,
                 lastName,
+                username,
+                email,
+                phoneNumber,
                 gender.getName(),
                 birthday,
                 aboutMe,

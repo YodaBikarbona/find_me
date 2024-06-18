@@ -16,6 +16,9 @@ public class IsImageValidator implements ConstraintValidator<IsImage, MultipartF
 
     @Override
     public boolean isValid(MultipartFile file, ConstraintValidatorContext context) {
+        if (file == null) {
+            return false;
+        }
         String contentType = file.getContentType();
         boolean isValid = Boolean.TRUE;
         if (contentType == null || !contentType.startsWith("image/")) {

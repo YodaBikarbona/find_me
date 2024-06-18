@@ -19,6 +19,15 @@ public class ProfileDto {
     @JsonProperty("lastName")
     private String lastName;
     @NotNull
+    @JsonProperty("username")
+    private String username;
+    @NotNull
+    @JsonProperty("email")
+    private String email;
+    @NotNull
+    @JsonProperty("phoneNumber")
+    private String phoneNumber;
+    @NotNull
     @JsonProperty("gender")
     private String gender;
     @NotNull

@@ -37,7 +37,7 @@ public class JwtUtil {
             expirationMilliseconds = ((((180L * 24) * 60) * 60) * 1000);
             secret = user.getSecurity().getRefreshTokenSecret();
         } else {
-            expirationMilliseconds = (5 * 60 * 1000);
+            expirationMilliseconds = (2 * 60 * 1000);
             secret = user.getSecurity().getAccessTokenSecret();
         }
         return Jwts.builder()
