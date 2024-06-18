@@ -50,6 +50,12 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(new ErrorResponse(getRequestId(request), STATUS, Instant.now(), ex.getMessage(), Collections.emptyList()), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
+    @ExceptionHandler(NoPermissionException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public ResponseEntity<ErrorResponse> handleNoPermissionException(NoPermissionException ex, HttpServletRequest request) {
+        return new ResponseEntity<>(new ErrorResponse(getRequestId(request), STATUS, Instant.now(), ex.getMessage(), Collections.emptyList()), HttpStatus.FORBIDDEN);
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<ErrorResponse> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpServletRequest request) {
