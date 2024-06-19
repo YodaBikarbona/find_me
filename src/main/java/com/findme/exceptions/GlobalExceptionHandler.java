@@ -56,6 +56,12 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(new ErrorResponse(getRequestId(request), STATUS, Instant.now(), ex.getMessage(), Collections.emptyList()), HttpStatus.FORBIDDEN);
     }
 
+    @ExceptionHandler(ToManyRequestsException.class)
+    @ResponseStatus(HttpStatus.TOO_MANY_REQUESTS)
+    public ResponseEntity<ErrorResponse> handleNoPermissionException(ToManyRequestsException ex, HttpServletRequest request) {
+        return new ResponseEntity<>(new ErrorResponse(getRequestId(request), STATUS, Instant.now(), ex.getMessage(), Collections.emptyList()), HttpStatus.TOO_MANY_REQUESTS);
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<ErrorResponse> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpServletRequest request) {

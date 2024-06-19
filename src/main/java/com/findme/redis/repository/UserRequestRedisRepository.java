@@ -15,4 +15,6 @@ public interface UserRequestRedisRepository extends CrudRepository<UserRequestEn
 
     List<UserRequestEntity> findAllByUserId(@Param("userId") long userId);
 
+    List<UserRequestEntity> findAllByIpAddress(@Param("ipAddress") String ipAddress);
+
 }
