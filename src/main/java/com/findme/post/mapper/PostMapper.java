@@ -34,10 +34,10 @@ public class PostMapper {
         return new PostDto(post.getId(), post.getDescription(), post.getViews(), post.getLongitude(), post.getLatitude(), images, comments, profile);
     }
 
-    public List<MapPostDto> postEntityToMapPosts(List<PostEntity> postEntities) {
+    public List<MapPostDto> postEntityToMapPosts(List<Object[]> postsData) {
         List<MapPostDto> posts = new ArrayList<>();
-        for (PostEntity postEntity: postEntities) {
-            MapPostDto mapPostDto = new MapPostDto(postEntity.getId(), postEntity.getLongitude(), postEntity.getLatitude());
+        for (Object[] postData: postsData) {
+            MapPostDto mapPostDto = new MapPostDto((long) postData[0], (double) postData[1], (double) postData[2], (double) postData[3]);
             posts.add(mapPostDto);
         }
         return posts;

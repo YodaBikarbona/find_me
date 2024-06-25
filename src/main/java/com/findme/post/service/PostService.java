@@ -70,7 +70,7 @@ public class PostService {
 
     public List<MapPostDto> getMapPosts(RequestPostsDto postsDto, long userId) throws InternalServerErrorException {
         ProfileEntity profile = profileService.getProfile(userId);
-        List<PostEntity> posts;
+        List<Object[]> posts;
         if (Objects.isNull(postsDto.radius())) {
             posts = postRepository.findNearestPosts(profile.getId(), postsDto.longitude(), postsDto.latitude(), postsDto.limit());
         } else {
