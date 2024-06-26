@@ -7,6 +7,7 @@ import jakarta.validation.ConstraintValidatorContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.Objects;
 import java.util.Optional;
 
 @Component
@@ -22,6 +23,9 @@ public class UniquePhoneNumberValidator implements ConstraintValidator<UniquePho
 
     @Override
     public boolean isValid(String phoneNumber, ConstraintValidatorContext context) {
+        if (Objects.isNull(phoneNumber) || phoneNumber.isEmpty()) {
+            return Boolean.TRUE;
+        }
         Optional<UserEntity> user = repository.findByPhoneNumber(phoneNumber);
         return user.isEmpty();
     }

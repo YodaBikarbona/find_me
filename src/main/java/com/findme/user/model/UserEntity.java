@@ -22,7 +22,6 @@ public class UserEntity extends BaseEntity {
     @NotNull
     @Column(name = "username")
     private String username;
-    @NotNull
     @Column(name = "phone_number")
     private String phoneNumber;
     @NotNull

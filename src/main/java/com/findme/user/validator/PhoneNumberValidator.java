@@ -7,6 +7,8 @@ import jakarta.validation.ConstraintValidatorContext;
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Component;
 
+import java.util.Objects;
+
 import static com.google.i18n.phonenumbers.Phonenumber.PhoneNumber.CountryCodeSource.UNSPECIFIED;
 
 @Component
@@ -23,6 +25,9 @@ public class PhoneNumberValidator implements ConstraintValidator<ValidPhoneNumbe
     @SneakyThrows
     @Override
     public boolean isValid(String phoneNumber, ConstraintValidatorContext context) {
+        if (Objects.isNull(phoneNumber) || phoneNumber.isEmpty()) {
+            return Boolean.TRUE;
+        }
         if (!phoneNumber.matches("^\\+?\\d+$")) {
             throw new  BadRequestException("The phone number format is invalid!");
         }
