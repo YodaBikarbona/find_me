@@ -41,9 +41,9 @@ public interface PostRepository extends JpaRepository<PostEntity, Long> {
     List<Object[]> findNearestPostsWithinRadius(@Param("profile_id") long profileId, @Param("longitude") float longitude,@Param("latitude") float latitude,@Param("radius") int radius, @Param("limit") int limit);
 
     @Query(
-            value = "SELECT pe FROM PostEntity pe WHERE pe.profile.id = :profile_id ORDER BY pe.createdAt DESC"
+            value = "SELECT pe FROM PostEntity pe WHERE pe.profile.id IN :profile_ids ORDER BY pe.createdAt DESC"
     )
-    List<PostEntity> findMyPosts(@Param("profile_id") long profileId, Pageable pageable);
+    List<PostEntity> findPosts(@Param("profile_ids") List<Long> profileIds, Pageable pageable);
 
     @Query("SELECT COUNT(pe) FROM PostEntity pe WHERE pe.createdAt BETWEEN :startDate AND :endDate")
     long countByCreatedAtBetween(Instant startDate, Instant endDate);

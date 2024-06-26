@@ -35,4 +35,8 @@
         <sqlFile path="create_post_comment_table.sql" relativeToChangelogFile="true"/>
     </changeSet>
 
+    <changeSet id="create-following-table" author="YodaBikarbona">
+        <sqlFile path="create_following_table.sql" relativeToChangelogFile="true"/>
+    </changeSet>
+
 </databaseChangeLog>

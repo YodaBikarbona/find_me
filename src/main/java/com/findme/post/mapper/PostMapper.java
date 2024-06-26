@@ -1,7 +1,7 @@
 package com.findme.post.mapper;
 
 import com.findme.post.dto.response.MapPostDto;
-import com.findme.post.dto.response.MyPostsDto;
+import com.findme.post.dto.response.PostsDto;
 import com.findme.post.dto.response.PostDto;
 import com.findme.post.dto.response.PostProfileDto;
 import com.findme.post.model.PostEntity;
@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 
 @Component
@@ -23,7 +24,7 @@ public class PostMapper {
     private final PostImageMapper postImageMapper;
     private final PostCommentMapper postCommentMapper;
 
-    public PostDto postEntityToPostDto(PostEntity post) {
+    public PostDto postEntityToPostDto(PostEntity post, long profileId) {
         List<PostImageDto> images = post.getPostImage().stream()
                 .map(postImageMapper::postImageEntityToPostImageDto)
                 .toList();
@@ -31,7 +32,9 @@ public class PostMapper {
                 .map(postCommentMapper::postCommentEntityToPostCommentDto)
                 .toList();
         PostProfileDto profile = new PostProfileDto(post.getProfile().getId(), post.getProfile().getUser().getUsername());
-        return new PostDto(post.getId(), post.getDescription(), post.getViews(), post.getLongitude(), post.getLatitude(), images, comments, profile);
+        boolean following = post.getProfile().getFollowers().isEmpty() ? Boolean.FALSE : post.getProfile().getFollowers().stream()
+                .anyMatch(follower -> Objects.equals(follower.getFollower().getId(), profileId));
+        return new PostDto(post.getId(), post.getDescription(), post.getViews(), post.getLongitude(), post.getLatitude(), images, comments, profile, following);
     }
 
     public List<MapPostDto> postEntityToMapPosts(List<Object[]> postsData) {
@@ -43,13 +46,13 @@ public class PostMapper {
         return posts;
     }
 
-    public List<MyPostsDto> postEntityToMyPosts(List<PostEntity> postEntities) {
-        List<MyPostsDto> posts = new ArrayList<>();
+    public List<PostsDto> postEntityToMyPosts(List<PostEntity> postEntities) {
+        List<PostsDto> posts = new ArrayList<>();
         for (PostEntity postEntity: postEntities) {
             List<PostImageDto> images = postEntity.getPostImage().stream()
                     .map(postImageMapper::postImageEntityToPostImageDto)
                     .toList();
-            posts.add(new MyPostsDto(postEntity.getId(), images));
+            posts.add(new PostsDto(postEntity.getId(), images));
         }
         return posts;
     }
