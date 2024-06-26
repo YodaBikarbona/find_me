@@ -7,8 +7,10 @@ import com.findme.profile.dto.request.EditProfileDto;
 import com.findme.profile.dto.request.NewProfileDto;
 import com.findme.profile.dto.response.ProfileDto;
 import com.findme.profile.mapper.ProfileMapper;
+import com.findme.profile.model.FollowingEntity;
 import com.findme.profile.model.Gender;
 import com.findme.profile.model.ProfileEntity;
+import com.findme.profile.repository.FollowingRepository;
 import com.findme.profile.repository.ProfileRepository;
 import com.findme.user.model.UserEntity;
 import com.findme.user.repository.UserRepository;
@@ -29,6 +31,7 @@ public class ProfileService {
     private final UserRepository userRepository;
     private final ProfileMapper profileMapper;
     private static final Logger logger = LoggerFactory.getLogger(ApplicationCtxHolderUtil.class);
+    private final FollowingRepository followingRepository;
 
 
     public ProfileDto fetchProfile(long userId) {
@@ -71,8 +74,45 @@ public class ProfileService {
 
     }
 
+    @Transactional
+    public void followProfile(long profileId, long userId) throws InternalServerErrorException {
+        ProfileEntity followingProfile = getProfileById(profileId);
+        ProfileEntity profile = getProfile(userId);
+        checkDuplicateFollowingProfiles(followingProfile.getId(), profile.getId());
+        try {
+            FollowingEntity following = new FollowingEntity(profile, followingProfile);
+            followingRepository.save(following);
+        } catch (Exception ex) {
+            logger.error("The profile cannot be successfully followed!", ex);
+            throw new InternalServerErrorException("Internal Server Error!");
+        }
+    }
+
+    @Transactional
+    public void unfollowProfile(long profileId, long userId) throws InternalServerErrorException {
+        ProfileEntity profile = getProfile(userId);
+        FollowingEntity following = followingRepository.findByFollowingIdAndFollowerId(profileId, profile.getId()).orElseThrow(() -> new NotFoundException("The following profile doesn't exist!"));
+        try {
+            followingRepository.delete(following);
+        } catch (Exception ex) {
+            logger.error("The profile cannot be successfully unfollowed!", ex);
+            throw new InternalServerErrorException("Internal Server Error!");
+        }
+    }
+
+    private void checkDuplicateFollowingProfiles(long followingId, long followerId) {
+        Optional<FollowingEntity> following = followingRepository.findByFollowingIdAndFollowerId(followingId, followerId);
+        if (following.isPresent()) {
+            throw new ConflictException("You have already followed this profile!");
+        }
+    }
+
     public ProfileEntity getProfile(long userId) throws NotFoundException {
         return profileRepository.findByUserId(userId).orElseThrow(() -> new NotFoundException("The profile doesn't exist!"));
+    }
+
+    private ProfileEntity getProfileById(long profileId) throws NotFoundException {
+        return profileRepository.findById(profileId).orElseThrow(() -> new NotFoundException("The profile doesn't exist!"));
     }
 
     private void checkDuplicateData(ProfileEntity profile, EditProfileDto data) {

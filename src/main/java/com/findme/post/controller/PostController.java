@@ -7,7 +7,7 @@ import com.findme.post.dto.request.RequestMyPostsDto;
 import com.findme.post.dto.request.RequestPostDto;
 import com.findme.post.dto.request.RequestPostsDto;
 import com.findme.post.dto.response.MapPostDto;
-import com.findme.post.dto.response.MyPostsDto;
+import com.findme.post.dto.response.PostsDto;
 import com.findme.post.dto.response.PostDto;
 import com.findme.post.service.PostService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -52,17 +52,18 @@ public class PostController {
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @Authorization
-    public PostDto getPost(@PathVariable long id) throws NotFoundException {
-        return postService.getPost(id);
+    public PostDto getPost(@PathVariable long id, HttpServletRequest request) throws NotFoundException {
+        return postService.getPost(id, Long.parseLong(request.getAttribute("userId").toString()));
     }
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(value = "/myPosts", produces = MediaType.APPLICATION_JSON_VALUE)
     @Authorization
-    public List<MyPostsDto> getMyPost(@Nullable @Min(0) @RequestParam Integer offset,
-                                      @NotNull @Min(5) @Max(100) @RequestParam int limit,
-                                      HttpServletRequest request) throws NotFoundException {
-        return postService.getMyPosts(new RequestMyPostsDto(offset, limit), Long.parseLong(request.getAttribute("userId").toString()));
+    public List<PostsDto> getMyPost(@Nullable @Min(0) @RequestParam Integer offset,
+                                    @NotNull @Min(5) @Max(100) @RequestParam int limit,
+                                    @NotNull @RequestParam boolean myPosts,
+                                    HttpServletRequest request) throws NotFoundException {
+        return postService.getPosts(new RequestMyPostsDto(offset, limit, myPosts), Long.parseLong(request.getAttribute("userId").toString()));
     }
 
 }

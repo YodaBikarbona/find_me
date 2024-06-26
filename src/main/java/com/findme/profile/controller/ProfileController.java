@@ -46,4 +46,18 @@ public class ProfileController {
         profileService.editProfile(editProfileDto, Long.parseLong(request.getAttribute("userId").toString()));
     }
 
+    @ResponseStatus(HttpStatus.CREATED)
+    @PostMapping(value = "/{profileId}/follow", produces = MediaType.APPLICATION_JSON_VALUE)
+    @Authorization
+    public void followProfile(@PathVariable long profileId, HttpServletRequest request) throws InternalServerErrorException {
+        profileService.followProfile(profileId, Long.parseLong(request.getAttribute("userId").toString()));
+    }
+
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @DeleteMapping(value = "/{profileId}/unfollow", produces = MediaType.APPLICATION_JSON_VALUE)
+    @Authorization
+    public void unfollowProfile(@PathVariable long profileId, HttpServletRequest request) throws InternalServerErrorException {
+        profileService.unfollowProfile(profileId, Long.parseLong(request.getAttribute("userId").toString()));
+    }
+
 }

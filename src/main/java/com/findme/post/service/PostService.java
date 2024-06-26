@@ -7,14 +7,16 @@ import com.findme.post.dto.request.RequestMyPostsDto;
 import com.findme.post.dto.request.RequestPostDto;
 import com.findme.post.dto.request.RequestPostsDto;
 import com.findme.post.dto.response.MapPostDto;
-import com.findme.post.dto.response.MyPostsDto;
+import com.findme.post.dto.response.PostsDto;
 import com.findme.post.dto.response.PostDto;
 import com.findme.post.mapper.PostMapper;
 import com.findme.post.model.PostEntity;
 import com.findme.post.repository.PostRepository;
 import com.findme.postimage.model.PostImageEntity;
 import com.findme.postimage.service.PostImageService;
+import com.findme.profile.model.FollowingEntity;
 import com.findme.profile.model.ProfileEntity;
+import com.findme.profile.repository.FollowingRepository;
 import com.findme.profile.service.ProfileService;
 import com.findme.utils.ApplicationCtxHolderUtil;
 import jakarta.transaction.Transactional;
@@ -30,6 +32,7 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneOffset;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -43,6 +46,7 @@ public class PostService {
     private final PostMapper postMapper;
     private final ProfileService profileService;
     private static final Logger logger = LoggerFactory.getLogger(ApplicationCtxHolderUtil.class);
+    private final FollowingRepository followingRepository;
 
     @Transactional
     public void createNewPost(RequestPostDto data, long userId) throws InternalServerErrorException, NoPermissionException {
@@ -79,22 +83,36 @@ public class PostService {
         return postMapper.postEntityToMapPosts(posts);
     }
 
-    public PostDto getPost(long postId) throws NotFoundException {
+    public PostDto getPost(long postId, long userId) throws NotFoundException {
+        ProfileEntity profile = profileService.getProfile(userId);
         PostEntity post = postRepository.findById(postId).orElseThrow(() -> new NotFoundException("The post doesn't exist!"));
         try {
             post.increaseViews();
             postRepository.save(post);
-            return postMapper.postEntityToPostDto(post);
+            return postMapper.postEntityToPostDto(post, profile.getId());
         } catch (Exception ex) {
             logger.error("The post cannot be successfully fetched or the views cannot be updated!", ex);
             throw new InternalServerErrorException("Internal Server Error!");
         }
     }
 
-    public List<MyPostsDto> getMyPosts(RequestMyPostsDto myPostsDto, long userId) throws NotFoundException {
+    public List<PostsDto> getPosts(RequestMyPostsDto myPostsDto, long userId) throws NotFoundException {
         ProfileEntity profile = profileService.getProfile(userId);
+        List<FollowingEntity> followingEntities = new ArrayList<>();
+        List<Long> profileIds = new ArrayList<>();
+        if (!myPostsDto.myPosts()) {
+            followingEntities = followingRepository.findAllByFollowerId(profile.getId());
+        }
+        if (!myPostsDto.myPosts() && followingEntities.isEmpty()) {
+            throw new NotFoundException("The posts don't exist!");
+        }
+        if (followingEntities.isEmpty()) {
+            profileIds.add(profile.getId());
+        } else {
+            followingEntities.forEach(followingEntity -> profileIds.add(followingEntity.getFollowing().getId()));
+        }
         Pageable pageable = PageRequest.of(!Objects.isNull(myPostsDto.offset()) ? myPostsDto.offset() : 0, myPostsDto.limit(), Sort.by("createdAt").descending());
-        List<PostEntity> posts = postRepository.findMyPosts(profile.getId(), pageable);
+        List<PostEntity> posts = postRepository.findPosts(profileIds, pageable);
         if (posts.isEmpty()) {
             throw new NotFoundException("The posts don't exist!");
         }
