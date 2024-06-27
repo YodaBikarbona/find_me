@@ -11,11 +11,14 @@ import com.findme.redis.repository.UserRequestRedisRepository;
 import com.findme.redis.service.RedisService;
 import com.findme.user.model.UserEntity;
 import com.findme.user.repository.UserRepository;
+import com.findme.utils.ApplicationCtxHolderUtil;
 import com.findme.utils.JwtUtil;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -34,6 +37,7 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
     private final RedisService redisService;
     public static final String REQUEST_ID_HEADER = "X-Request-ID";
     private final int maxRequests = 50;
+    private static final Logger logger = LoggerFactory.getLogger(ApplicationCtxHolderUtil.class);
 
 
     @Override
@@ -61,6 +65,7 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
                     throw new NotFoundException("To many requests!");
 
                 }
+                logger.info("--------------- Find by request id {} --------------", request.getAttribute(REQUEST_ID_HEADER).toString());
                 Optional<UserRequestEntity> userRequestEntity = userRequestRedisRepository.findByRequestId(request.getAttribute(REQUEST_ID_HEADER).toString());
                 if (userRequestEntity.isEmpty()) {
                     throw new NoPermissionException("You don't have a permission!");
