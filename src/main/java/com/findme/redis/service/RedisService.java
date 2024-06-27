@@ -33,6 +33,7 @@ public class RedisService {
         try {
             UserRequestEntity userRequestEntity = new UserRequestEntity(newRequestLogDto.getId(), newRequestLogDto.getRequestId(), newRequestLogDto.getUserId(), newRequestLogDto.getIpAddress(), newRequestLogDto.getRoute());
             userRequestRedisRepository.save(userRequestEntity);
+            logger.info("---------- New request log is added RequestId: {}", userRequestEntity.getRequestId());
         } catch (Exception ex) {
             logger.error("The new request log failed.", ex);
         }

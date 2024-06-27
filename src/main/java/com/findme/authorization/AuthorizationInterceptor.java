@@ -65,6 +65,7 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
                     throw new NotFoundException("To many requests!");
 
                 }
+                logger.info("---------- Searching by RequestId: {}", request.getAttribute(REQUEST_ID_HEADER).toString());
                 Optional<UserRequestEntity> userRequestEntity = userRequestRedisRepository.findByRequestId(request.getAttribute(REQUEST_ID_HEADER).toString());
                 if (userRequestEntity.isEmpty()) {
                     throw new NoPermissionException("You don't have a permission!");
