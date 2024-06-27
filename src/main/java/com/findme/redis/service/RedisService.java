@@ -12,6 +12,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -69,6 +71,31 @@ public class RedisService {
             return blockUserRedisRepository.findByIpAddress(ipAddress);
         }
         return blockUserRedisRepository.findByUserId(userId);
+    }
+
+    public List<BlockUserEntity> getAllBlockUserEntities() {
+        return (List<BlockUserEntity>) blockUserRedisRepository.findAll();
+    }
+
+    @Transactional
+    public void removeBlockedUser(BlockUserEntity blockUserEntity) {
+        try {
+            blockUserRedisRepository.delete(blockUserEntity);
+        } catch (Exception ex) {
+            logger.error("The user cannot be unblocked successfully!", ex);
+        }
+    }
+
+    @Transactional
+    public void cleanUserRequestLog() {
+        try {
+            List<UserRequestEntity> userRequestEntities = (List<UserRequestEntity>) userRequestRedisRepository.findAll();
+            List<UserRequestEntity> entitiesToDelete = userRequestEntities.stream()
+                    .filter(entity -> entity.getCreatedAt().plus(Duration.ofMinutes(1)).isBefore(Instant.now())).toList();
+            userRequestRedisRepository.deleteAll(entitiesToDelete);
+        } catch (Exception ex) {
+            logger.error("The logs cannot be cleaned!", ex);
+        }
     }
 
 }
