@@ -33,7 +33,7 @@ public class ProfileController {
     }
 
     @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping(value = "/create", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/create", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @Authorization
     public ProfileDto createNewProfile(@Valid @RequestBody NewProfileDto newProfileDto, HttpServletRequest request) throws ConflictException, InternalServerErrorException {
         return profileService.createNewProfile(newProfileDto, Long.parseLong(request.getAttribute("userId").toString()));

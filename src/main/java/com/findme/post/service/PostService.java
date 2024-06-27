@@ -56,7 +56,7 @@ public class PostService {
         }
         Instant startDay = Instant.now().atZone(ZoneOffset.UTC).toLocalDate().atStartOfDay(ZoneOffset.UTC).toInstant();
         Instant endDay = LocalDateTime.of(LocalDateTime.now().toLocalDate(), LocalTime.MAX).atZone(ZoneOffset.UTC).toInstant();
-        if (postRepository.countByCreatedAtBetween(startDay, endDay) > 4) {
+        if (postRepository.countByCreatedAtBetween(profile.getId(), startDay, endDay) > 10) {
             throw new NoPermissionException("The limit of 5 posts are reached!");
         }
         try {
@@ -116,6 +116,7 @@ public class PostService {
         if (posts.isEmpty()) {
             throw new NotFoundException("The posts don't exist!");
         }
+        System.out.println(posts.size());
         return postMapper.postEntityToMyPosts(posts);
     }
 

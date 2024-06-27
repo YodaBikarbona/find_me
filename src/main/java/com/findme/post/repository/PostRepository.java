@@ -45,7 +45,7 @@ public interface PostRepository extends JpaRepository<PostEntity, Long> {
     )
     List<PostEntity> findPosts(@Param("profile_ids") List<Long> profileIds, Pageable pageable);
 
-    @Query("SELECT COUNT(pe) FROM PostEntity pe WHERE pe.createdAt BETWEEN :startDate AND :endDate")
-    long countByCreatedAtBetween(Instant startDate, Instant endDate);
+    @Query("SELECT COUNT(pe) FROM PostEntity pe WHERE pe.profile.id = :profileId AND pe.createdAt BETWEEN :startDate AND :endDate")
+    long countByCreatedAtBetween(long profileId, Instant startDate, Instant endDate);
 
 }
