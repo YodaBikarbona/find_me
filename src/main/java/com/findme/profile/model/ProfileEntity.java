@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 @Table(name = "profiles")
@@ -47,6 +48,9 @@ public class ProfileEntity extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "profile_image_id")
     private ProfileImageEntity profileImage;
+
+    @OneToMany(mappedBy = "following")
+    private List<FollowingEntity> followers;
 
     // Constructors
     public ProfileEntity(String firstName, String lastName, Gender gender, LocalDate birthday, String aboutMe, UserEntity user) {

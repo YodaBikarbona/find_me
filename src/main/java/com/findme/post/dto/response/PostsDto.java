@@ -4,5 +4,5 @@ import com.findme.postimage.dto.response.PostImageDto;
 
 import java.util.List;
 
-public record MyPostsDto(long id, List<PostImageDto> images) {
+public record PostsDto(long id, List<PostImageDto> images) {
 }

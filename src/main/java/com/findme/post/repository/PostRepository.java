@@ -15,17 +15,18 @@ public interface PostRepository extends JpaRepository<PostEntity, Long> {
 
     @Query(
             value = "SELECT " +
-                    "*, " +
+                    "id, longitude, latitude, " +
                     "(6371 * acos(cos(radians(:latitude)) * cos(radians(latitude)) * cos(radians(longitude) - radians(:longitude)) + sin(radians(:latitude)) * sin(radians(latitude)))) AS distance\n" +
                     "FROM posts\n" +
                     "WHERE profile_id != :profile_id\n" +
                     "ORDER BY distance\n" +
                     "LIMIT :limit", nativeQuery = true
     )
-    List<PostEntity> findNearestPosts(@Param("profile_id") long profileId, @Param("longitude") float longitude,@Param("latitude") float latitude, @Param("limit") int limit);
+    List<Object[]> findNearestPosts(@Param("profile_id") long profileId, @Param("longitude") float longitude,@Param("latitude") float latitude, @Param("limit") int limit);
 
     @Query(
-            value = "SELECT *\n" +
+            value = "SELECT " +
+                    "id, longitude, latitude, " +
                     "FROM (\n" +
                     "    SELECT *,\n" +
                     "           (6371 * acos(cos(radians(:latitude)) * cos(radians(latitude)) * cos(radians(longitude) - radians(:longitude)) + sin(radians(:latitude)) * sin(radians(latitude)))) AS distance\n" +
@@ -37,14 +38,14 @@ public interface PostRepository extends JpaRepository<PostEntity, Long> {
                     "LIMIT :limit",
             nativeQuery = true
     )
-    List<PostEntity> findNearestPostsWithinRadius(@Param("profile_id") long profileId, @Param("longitude") float longitude,@Param("latitude") float latitude,@Param("radius") int radius, @Param("limit") int limit);
+    List<Object[]> findNearestPostsWithinRadius(@Param("profile_id") long profileId, @Param("longitude") float longitude,@Param("latitude") float latitude,@Param("radius") int radius, @Param("limit") int limit);
 
     @Query(
-            value = "SELECT pe FROM PostEntity pe WHERE pe.profile.id = :profile_id ORDER BY pe.createdAt"
+            value = "SELECT pe FROM PostEntity pe WHERE pe.profile.id IN :profile_ids ORDER BY pe.createdAt DESC"
     )
-    List<PostEntity> findMyPosts(@Param("profile_id") long profileId, Pageable pageable);
+    List<PostEntity> findPosts(@Param("profile_ids") List<Long> profileIds, Pageable pageable);
 
-    @Query("SELECT COUNT(pe) FROM PostEntity pe WHERE pe.createdAt BETWEEN :startDate AND :endDate")
-    long countByCreatedAtBetween(Instant startDate, Instant endDate);
+    @Query("SELECT COUNT(pe) FROM PostEntity pe WHERE pe.profile.id = :profileId AND pe.createdAt BETWEEN :startDate AND :endDate")
+    long countByCreatedAtBetween(long profileId, Instant startDate, Instant endDate);
 
 }

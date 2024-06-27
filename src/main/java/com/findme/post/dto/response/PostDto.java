@@ -13,5 +13,6 @@ public record PostDto(
         float latitude,
         List<PostImageDto> images,
         List<PostCommentDto> comments,
-        PostProfileDto profile) {
+        PostProfileDto profile,
+        boolean following) {
 }
