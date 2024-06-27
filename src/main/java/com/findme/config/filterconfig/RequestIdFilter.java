@@ -33,8 +33,6 @@ public class RequestIdFilter implements Filter {
         if (Objects.isNull(requestId) || requestId.isEmpty()) {
             requestId = UUID.randomUUID().toString();
         }
-        logger.info("------------------- Request ID: {}", requestId);
-        logger.info("------------------- RemoteAddr: {}", httpRequest.getRemoteAddr());
         httpRequest.setAttribute(REQUEST_ID_HEADER, requestId);
         if (redisService.getBlockUserEntity(httpRequest.getRemoteAddr(), null).isEmpty()) {
             redisService.newRequestLog(new RedisDto(redisService.generateUniqueId(), requestId, null, httpRequest.getRemoteAddr(), httpRequest.getRequestURI()));

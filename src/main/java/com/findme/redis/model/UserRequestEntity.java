@@ -18,6 +18,7 @@ public class UserRequestEntity implements Serializable {
 
     @Id
     private long id;
+    @Indexed
     private String requestId;
     private Instant createdAt;
     @Indexed
