@@ -3,6 +3,7 @@ package com.findme.post.service;
 import com.findme.exceptions.InternalServerErrorException;
 import com.findme.exceptions.NoPermissionException;
 import com.findme.exceptions.NotFoundException;
+import com.findme.post.dto.request.GetPostDto;
 import com.findme.post.dto.request.RequestMyPostsDto;
 import com.findme.post.dto.request.RequestPostDto;
 import com.findme.post.dto.request.RequestPostsDto;
@@ -83,13 +84,14 @@ public class PostService {
         return postMapper.postEntityToMapPosts(posts);
     }
 
-    public PostDto getPost(long postId, long userId) throws NotFoundException {
+    public PostDto getPost(GetPostDto postDto, long userId) throws NotFoundException {
         ProfileEntity profile = profileService.getProfile(userId);
-        PostEntity post = postRepository.findById(postId).orElseThrow(() -> new NotFoundException("The post doesn't exist!"));
+        PostEntity post = postRepository.findById(postDto.id()).orElseThrow(() -> new NotFoundException("The post doesn't exist!"));
+        double distance = postRepository.findPostDistance(postDto.id(), postDto.longitude(), postDto.latitude());
         try {
             post.increaseViews();
             postRepository.save(post);
-            return postMapper.postEntityToPostDto(post, profile.getId());
+            return postMapper.postEntityToPostDto(post, profile.getId(), distance);
         } catch (Exception ex) {
             logger.error("The post cannot be successfully fetched or the views cannot be updated!", ex);
             throw new InternalServerErrorException("Internal Server Error!");

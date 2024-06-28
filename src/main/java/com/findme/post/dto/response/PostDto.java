@@ -14,5 +14,6 @@ public record PostDto(
         List<PostImageDto> images,
         List<PostCommentDto> comments,
         PostProfileDto profile,
-        boolean following) {
+        boolean following,
+        double distance) {
 }

@@ -3,6 +3,7 @@ package com.findme.post.controller;
 import com.findme.authorization.Authorization;
 import com.findme.exceptions.InternalServerErrorException;
 import com.findme.exceptions.NotFoundException;
+import com.findme.post.dto.request.GetPostDto;
 import com.findme.post.dto.request.RequestMyPostsDto;
 import com.findme.post.dto.request.RequestPostDto;
 import com.findme.post.dto.request.RequestPostsDto;
@@ -52,8 +53,11 @@ public class PostController {
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @Authorization
-    public PostDto getPost(@PathVariable long id, HttpServletRequest request) throws NotFoundException {
-        return postService.getPost(id, Long.parseLong(request.getAttribute("userId").toString()));
+    public PostDto getPost(@PathVariable long id,
+                           @Min(-180) @Max(180) @NotNull @RequestParam float longitude,
+                           @Min(-90) @Max(90) @NotNull @RequestParam float latitude,
+                           HttpServletRequest request) throws NotFoundException {
+        return postService.getPost(new GetPostDto(id, latitude, longitude), Long.parseLong(request.getAttribute("userId").toString()));
     }
 
     @ResponseStatus(HttpStatus.OK)

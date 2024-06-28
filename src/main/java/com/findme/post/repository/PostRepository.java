@@ -48,4 +48,12 @@ public interface PostRepository extends JpaRepository<PostEntity, Long> {
     @Query("SELECT COUNT(pe) FROM PostEntity pe WHERE pe.profile.id = :profileId AND pe.createdAt BETWEEN :startDate AND :endDate")
     long countByCreatedAtBetween(long profileId, Instant startDate, Instant endDate);
 
+    @Query(
+            value = "SELECT " +
+                    "(6371 * acos(cos(radians(:latitude)) * cos(radians(latitude)) * cos(radians(longitude) - radians(:longitude)) + sin(radians(:latitude)) * sin(radians(latitude)))) AS distance\n" +
+                    "FROM posts\n" +
+                    "WHERE id != :id\n", nativeQuery = true
+    )
+    double findPostDistance(@Param("id") long id, @Param("longitude") float longitude, @Param("latitude") float latitude);
+
 }
