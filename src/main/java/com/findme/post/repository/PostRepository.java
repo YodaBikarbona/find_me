@@ -52,7 +52,7 @@ public interface PostRepository extends JpaRepository<PostEntity, Long> {
             value = "SELECT " +
                     "(6371 * acos(cos(radians(:latitude)) * cos(radians(latitude)) * cos(radians(longitude) - radians(:longitude)) + sin(radians(:latitude)) * sin(radians(latitude)))) AS distance\n" +
                     "FROM posts\n" +
-                    "WHERE id != :id\n", nativeQuery = true
+                    "WHERE id = :id\n", nativeQuery = true
     )
     double findPostDistance(@Param("id") long id, @Param("longitude") float longitude, @Param("latitude") float latitude);
 
