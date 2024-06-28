@@ -58,7 +58,7 @@ public class PostController {
                            @Min(-90) @Max(90) @NotNull @RequestParam float latitude,
                            HttpServletRequest request) throws NotFoundException {
         return postService.getPost(new GetPostDto(id, latitude, longitude), Long.parseLong(request.getAttribute("userId").toString()));
-    }
+    } 
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(value = "/myPosts", produces = MediaType.APPLICATION_JSON_VALUE)
