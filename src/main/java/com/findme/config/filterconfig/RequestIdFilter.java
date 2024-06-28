@@ -34,7 +34,9 @@ public class RequestIdFilter implements Filter {
             requestId = UUID.randomUUID().toString();
         }
         httpRequest.setAttribute(REQUEST_ID_HEADER, requestId);
-        redisService.newRequestLog(new RedisDto(redisService.generateUniqueId(), requestId, null, httpRequest.getRemoteAddr(), httpRequest.getRequestURI()));
+        if (redisService.getBlockUserEntity(httpRequest.getRemoteAddr(), null).isEmpty()) {
+            redisService.newRequestLog(new RedisDto(redisService.generateUniqueId(), requestId, null, httpRequest.getRemoteAddr(), httpRequest.getRequestURI()));
+        }
         chain.doFilter(request, response);
     }
 

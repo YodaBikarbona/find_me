@@ -24,7 +24,7 @@ public class PostMapper {
     private final PostImageMapper postImageMapper;
     private final PostCommentMapper postCommentMapper;
 
-    public PostDto postEntityToPostDto(PostEntity post, long profileId) {
+    public PostDto postEntityToPostDto(PostEntity post, long profileId, double distance) {
         List<PostImageDto> images = post.getPostImage().stream()
                 .map(postImageMapper::postImageEntityToPostImageDto)
                 .toList();
@@ -34,7 +34,17 @@ public class PostMapper {
         PostProfileDto profile = new PostProfileDto(post.getProfile().getId(), post.getProfile().getUser().getUsername());
         boolean following = post.getProfile().getFollowers().isEmpty() ? Boolean.FALSE : post.getProfile().getFollowers().stream()
                 .anyMatch(follower -> Objects.equals(follower.getFollower().getId(), profileId));
-        return new PostDto(post.getId(), post.getDescription(), post.getViews(), post.getLongitude(), post.getLatitude(), images, comments, profile, following);
+        return new PostDto(
+                post.getId(),
+                post.getDescription(),
+                post.getViews(),
+                post.getLongitude(),
+                post.getLatitude(),
+                images,
+                comments,
+                profile,
+                following,
+                distance);
     }
 
     public List<MapPostDto> postEntityToMapPosts(List<Object[]> postsData) {
