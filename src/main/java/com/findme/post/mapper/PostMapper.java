@@ -24,7 +24,7 @@ public class PostMapper {
     private final PostImageMapper postImageMapper;
     private final PostCommentMapper postCommentMapper;
 
-    public PostDto postEntityToPostDto(PostEntity post, long profileId, double distance) {
+    public PostDto postEntityToPostDto(PostEntity post, long profileId, Double distance) {
         List<PostImageDto> images = post.getPostImage().stream()
                 .map(postImageMapper::postImageEntityToPostImageDto)
                 .toList();
