@@ -87,7 +87,7 @@ public class PostService {
     public PostDto getPost(GetPostDto postDto, long userId) throws NotFoundException {
         ProfileEntity profile = profileService.getProfile(userId);
         PostEntity post = postRepository.findById(postDto.id()).orElseThrow(() -> new NotFoundException("The post doesn't exist!"));
-        double distance = postRepository.findPostDistance(postDto.id(), postDto.longitude(), postDto.latitude());
+        Double distance = (!Objects.isNull(postDto.latitude()) && !Objects.isNull(postDto.longitude())) ? postRepository.findPostDistance(postDto.id(), postDto.longitude(), postDto.latitude()) : null;
         try {
             post.increaseViews();
             postRepository.save(post);

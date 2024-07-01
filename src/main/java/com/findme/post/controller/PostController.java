@@ -54,8 +54,8 @@ public class PostController {
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @Authorization
     public PostDto getPost(@PathVariable long id,
-                           @Min(-180) @Max(180) @NotNull @RequestParam float longitude,
-                           @Min(-90) @Max(90) @NotNull @RequestParam float latitude,
+                           @Nullable @Min(-180) @Max(180) @NotNull @RequestParam Float longitude,
+                           @Nullable @Min(-90) @Max(90) @NotNull @RequestParam Float latitude,
                            HttpServletRequest request) throws NotFoundException {
         return postService.getPost(new GetPostDto(id, latitude, longitude), Long.parseLong(request.getAttribute("userId").toString()));
     }
@@ -63,7 +63,7 @@ public class PostController {
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(value = "/myPosts", produces = MediaType.APPLICATION_JSON_VALUE)
     @Authorization
-    public List<PostsDto> getMyPost(@Nullable @Min(0) @RequestParam Integer offset,
+    public List<PostsDto> getPosts(@Nullable @Min(0) @RequestParam Integer offset,
                                     @NotNull @Min(5) @Max(100) @RequestParam int limit,
                                     @NotNull @RequestParam boolean myPosts,
                                     HttpServletRequest request) throws NotFoundException {

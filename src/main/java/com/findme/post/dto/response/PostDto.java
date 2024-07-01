@@ -15,5 +15,5 @@ public record PostDto(
         List<PostCommentDto> comments,
         PostProfileDto profile,
         boolean following,
-        double distance) {
+        Double distance) {
 }
